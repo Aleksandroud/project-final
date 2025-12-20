@@ -35,4 +35,4 @@ Morning Dispatch $-$ две недели
 
 Анастасия Кузьмина $-$ ответственна за ML-составляющую (Recommendation)
 
-Кобельков Ярослав $-$ ответственен за базы данных (Data Base и Cache) и за Morning Dispatch
+Ярослав Кобельков $-$ ответственен за базы данных (Data Base и Cache) и за Morning Dispatch
