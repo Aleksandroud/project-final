@@ -60,27 +60,22 @@ async def disp_handler(message: Message, state: FSMContext) -> None:
 
     if answer == "да":
         await state.update_data(has_license=True)
-        await message.answer("В какое время вы хотите получать сводку (формат ЧЧ:ММ с шагом 30 минут, например 08:30)")
-        await state.set_state(Survey.drive_time)
+        await message.answer(
+                "Укажите свой часовой пояс относительно UTC.\n"
+                "Примеры: UTC+2, UTC-5, +03:00"
+            )
+        await state.set_state(Survey.timezone)
 
     elif answer == "нет":
         await state.update_data(has_license=False)
         await state.set_state(Survey.final)
-        await message.answer("Хорошо, идём дальше")
+        await message.answer("Хорошо, идем дальше")
 
     else:
         await message.answer("Пожалуйста, ответьте 'да' или 'нет'")
 
 @dp.message(Survey.timezone)
-async def go_to_timezone(message: Message, state: FSMContext):
-    await message.answer(
-        "Укажите свой часовой пояс относительно UTC.\n"
-        "Примеры: UTC+2, UTC-5, +03:00"
-    )
-    await state.set_state(Survey.ask_timezone)
-
-@dp.message(Survey.timezone)
-async def timezone_handler(message: Message, state: FSMContext):
+async def timezone_handler(message: Message, state: FSMContext) -> None:
     text = message.text.strip().upper()
 
     match = re.match(r"(UTC)?([+-])(\d{1,2})(?::(\d{2}))?$", text)
@@ -111,7 +106,7 @@ async def timezone_handler(message: Message, state: FSMContext):
     await state.set_state(Survey.local_time)
 
 @dp.message(Survey.local_time)
-async def time_handler(message: Message, state: FSMContext):
+async def time_handler(message: Message, state: FSMContext) -> None:
     try:
         hours, minutes = map(int, message.text.split(":"))
         if not (0 <= hours <= 23 and minutes not in (0, 30)):
@@ -129,7 +124,7 @@ async def time_handler(message: Message, state: FSMContext):
         tzinfo=user_tz
     )
 
-    utc_dt = local_dt.astimezone(timezone)
+    utc_dt = local_dt.astimezone(timezone.utc)
 
     await state.update_data(time_utc=utc_dt)
 
@@ -156,7 +151,6 @@ async def clothes_choice_handler(message: Message, state: FSMContext):
         return
 
     await state.update_data(car_choice=int(message.text))
-    await state.set_state(Survey.final)
     await message.answer("Отличный выбор!")
 
 async def main() -> None:
