@@ -3,10 +3,9 @@ import logging
 import sys
 import re
 from datetime import datetime, time, date, timezone, timedelta
-from aiogram import Bot, Dispatcher, html, F, Router
-from aiogram.filters import CommandStart, Command
-from aiogram.types import Message, KeyboardButton, InputMediaPhoto
-from aiogram.utils.keyboard import InlineKeyboardBuilder
+from aiogram import Bot, Dispatcher
+from aiogram.filters import CommandStart
+from aiogram.types import Message, InputMediaPhoto
 from aiogram.client.default import DefaultBotProperties
 from aiogram.enums import ParseMode
 from aiogram.fsm.state import State, StatesGroup
@@ -15,7 +14,6 @@ from aiogram.fsm.context import FSMContext
 
 class Survey(StatesGroup):
     name = State()
-    age = State()
     gender = State()
     city = State()
     disp_state = State()
@@ -37,22 +35,16 @@ async def name_handler(message: Message, state: FSMContext) -> None:
 @dp.message(Survey.name)
 async def age_handler(message: Message, state: FSMContext) -> None:
     await state.update_data(name=message.text)
-    await message.answer("Сколько вам лет?")
-    await state.set_state(Survey.age)
-
-@dp.message(Survey.age)
-async def city_handler(message: Message, state: FSMContext) -> None:
-    await state.update_data(name=message.text)
-    await message.answer("В каком городе вы живёте?")
-    await state.set_state(Survey.city)
-
-@dp.message(Survey.city)
-async def city_handler(message: Message, state: FSMContext) -> None:
-    await state.update_data(name=message.text)
     await message.answer("Какого вы пола (м или ж)?")
     await state.set_state(Survey.gender)
 
 @dp.message(Survey.gender)
+async def city_handler(message: Message, state: FSMContext) -> None:
+    await state.update_data(name=message.text)
+    await message.answer("В каком городе вы живете?")
+    await state.set_state(Survey.disp_state)
+
+@dp.message(Survey.disp_state)
 async def city_handler(message: Message, state: FSMContext) -> None:
     await state.update_data(name=message.text)
     await message.answer("Хотите ли вы получать ежедневную сводку?")
@@ -142,7 +134,7 @@ async def time_handler(message: Message, state: FSMContext):
         f"Ваше время в UTC: {utc_dt.strftime('%H:%M')}"
     )
 
-    await state.set_state(Survey.car_choice)
+    await state.set_state(Survey.clothes_choice)
 
 async def send_clothes_images(message: Message):
     media = [
@@ -153,8 +145,8 @@ async def send_clothes_images(message: Message):
 
     await message.answer_media_group(media)
 
-@dp.message(Survey.car_choice)
-async def car_choice_handler(message: Message, state: FSMContext):
+@dp.message(Survey.clothes_choice)
+async def clothes_choice_handler(message: Message, state: FSMContext):
     if message.text not in (str(i) for i in range(1, 11)):
         await message.answer("Пожалуйста, выбери один из предложенных вариантов.")
         return
