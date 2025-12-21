@@ -29,25 +29,29 @@ dp = Dispatcher(storage=MemoryStorage())
 @dp.message(CommandStart())
 async def name_handler(message: Message, state: FSMContext) -> None:
     await state.clear()
-    await message.answer("Назовите ваше имя")
+    await message.answer("Доброго времени бытия! Вас приветствует Гардеробный бот. Сейчас вам будет предложено пройти опрос.\n 1. Назовите ваше имя")
     await state.set_state(Survey.name)
 
 @dp.message(Survey.name)
 async def age_handler(message: Message, state: FSMContext) -> None:
     await state.update_data(name=message.text)
-    await message.answer("Какого вы пола (м или ж)?")
+    await message.answer("2. Какого вы пола (м или ж)?")
     await state.set_state(Survey.gender)
 
 @dp.message(Survey.gender)
 async def city_handler(message: Message, state: FSMContext) -> None:
-    await state.update_data(name=message.text)
-    await message.answer("В каком городе вы живете?")
-    await state.set_state(Survey.disp_state)
+    answer = message.text.lower().strip()
+    if answer in ("м", "ж"):
+        await state.update_data(name=answer)
+    else:
+        await message.answer("Пожалуйста, ответьте м или ж")
+    await message.answer("3. В каком городе вы живете?")
+    await state.set_state(Survey.city)
 
-@dp.message(Survey.disp_state)
+@dp.message(Survey.city)
 async def city_handler(message: Message, state: FSMContext) -> None:
     await state.update_data(name=message.text)
-    await message.answer("Хотите ли вы получать ежедневную сводку?")
+    await message.answer("4. Хотите ли вы получать ежедневную сводку?")
     await state.set_state(Survey.disp_state)
 
 @dp.message(Survey.disp_state)
