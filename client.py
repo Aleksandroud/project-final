@@ -16,6 +16,7 @@ from aiogram.fsm.context import FSMContext
 class Survey(StatesGroup):
     name = State()
     age = State()
+    gender = State()
     city = State()
     disp_state = State()
     local_time = State()
@@ -39,11 +40,23 @@ async def age_handler(message: Message, state: FSMContext) -> None:
     await message.answer("Сколько вам лет?")
     await state.set_state(Survey.age)
 
-@dp.message(Survey.city)
+@dp.message(Survey.age)
 async def city_handler(message: Message, state: FSMContext) -> None:
     await state.update_data(name=message.text)
     await message.answer("В каком городе вы живёте?")
     await state.set_state(Survey.city)
+
+@dp.message(Survey.city)
+async def city_handler(message: Message, state: FSMContext) -> None:
+    await state.update_data(name=message.text)
+    await message.answer("Какого вы пола (м или ж)?")
+    await state.set_state(Survey.gender)
+
+@dp.message(Survey.gender)
+async def city_handler(message: Message, state: FSMContext) -> None:
+    await state.update_data(name=message.text)
+    await message.answer("Хотите ли вы получать ежедневную сводку?")
+    await state.set_state(Survey.disp_state)
 
 @dp.message(Survey.disp_state)
 async def disp_handler(message: Message, state: FSMContext) -> None:
@@ -101,7 +114,7 @@ async def timezone_handler(message: Message, state: FSMContext):
     )
     await state.set_state(Survey.local_time)
 
-@dp.message(Survey.ask_time)
+@dp.message(Survey.local_time)
 async def time_handler(message: Message, state: FSMContext):
     try:
         hours, minutes = map(int, message.text.split(":"))
@@ -129,7 +142,7 @@ async def time_handler(message: Message, state: FSMContext):
         f"Ваше время в UTC: {utc_dt.strftime('%H:%M')}"
     )
 
-    await state.set_state(Survey.next_state)
+    await state.set_state(Survey.car_choice)
 
 async def send_clothes_images(message: Message):
     media = [
