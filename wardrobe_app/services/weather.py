@@ -27,7 +27,6 @@ class WeatherData:
         if self.updated_at is None:
             self.updated_at = datetime.now()
 
-
 class WeatherAPI:
     def __init__(self):
         self.base_url = "http://api.weatherapi.com/v1"

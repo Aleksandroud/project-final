@@ -6,9 +6,12 @@ from aiogram import Bot
 from aiogram.exceptions import TelegramForbiddenError, TelegramBadRequest
 
 from wardrobe_app.database.connection import get_db
+from wardrobe_app.llm_model.model import generate_clothing_recommendation
+from wardrobe_app.database.connection import get_db
 from wardrobe_app.database.models import User, UserPreferences
 from .cache import weather_cache
 from .weather import WeatherData
+from json import dumps
 
 logger = logging.getLogger(__name__)
 
@@ -154,28 +157,7 @@ class MorningDispatcher:
         return results
 
     def _generate_recommendation(self, weather: WeatherData, user: User) -> str:
-        temperature = weather.temperature
-        conditions = weather.conditions.lower()
-
-        if temperature > 25:
-            temp_advice = "Очень тепло, наденьте легкую одежду"
-        elif temperature > 15:
-            temp_advice = "Тепло, подойдет демисезонная одежда"
-        elif temperature > 5:
-            temp_advice = "Прохладно, возьмите куртку"
-        else:
-            temp_advice = "Холодно, наденьте теплую одежду"
-
-        if "дождь" in conditions or "дожд" in conditions:
-            conditions_advice = "Возьмите зонт или дождевик"
-        elif "снег" in conditions:
-            conditions_advice = "Оденьтесь теплее, возможен снег"
-        elif "солн" in conditions or "ясн" in conditions:
-            conditions_advice = "Солнечно, не забудьте головной убор"
-        else:
-            conditions_advice = ""
-
-        return f"{temp_advice}. {conditions_advice}".strip()
+        return generate_clothing_recommendation(user.telegram_id, str(dumps(weather)))
 
     async def _send_user_notification(self, user: User, city: str,
                                       weather: WeatherData, recommendation: str):
