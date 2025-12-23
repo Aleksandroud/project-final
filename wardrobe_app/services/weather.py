@@ -1,20 +1,16 @@
 import aiohttp
 import logging
-import json
 from datetime import datetime, timedelta
 from typing import Optional, Dict, Any, Tuple
 from dataclasses import dataclass
-import asyncio
 from wardrobe_app.config import settings
 from wardrobe_app.database.connection import get_db
-import sqlite3
 
 logger = logging.getLogger(__name__)
 
 
 @dataclass
 class WeatherData:
-    """Структура для хранения данных о погоде"""
     city: str
     temperature: float
     feels_like: float
@@ -33,13 +29,11 @@ class WeatherData:
 
 
 class WeatherAPI:
-    """Основной класс для работы с WeatherAPI.com"""
-
     def __init__(self):
         self.base_url = "http://api.weatherapi.com/v1"
         self.session: Optional[aiohttp.ClientSession] = None
         self.cache: Dict[str, Tuple[datetime, WeatherData]] = {}
-        self.cache_ttl = timedelta(minutes=30)  # Кэшируем на 30 минут
+        self.cache_ttl = timedelta(minutes=30)
 
     async def __aenter__(self):
         self.session = aiohttp.ClientSession()
@@ -51,7 +45,6 @@ class WeatherAPI:
             await self.session.close()
 
     async def _init_cache_table(self):
-        """Инициализация таблицы кэша в SQLite"""
         async with get_db() as session:
             await session.execute("""
                 CREATE TABLE IF NOT EXISTS weather_cache (
@@ -72,48 +65,30 @@ class WeatherAPI:
             await session.commit()
 
     async def get_current_weather(self, city: str, force_refresh: bool = False) -> WeatherData:
-        """
-        Получает текущую погоду для города.
-
-        Args:
-            city: Название города
-            force_refresh: Принудительно обновить кэш
-
-        Returns:
-            WeatherData объект с данными о погоде
-        """
-        # 1. Проверяем кэш в памяти
         if not force_refresh:
             cached = await self._get_from_cache(city)
             if cached:
-                logger.debug(f"Используем кэш для {city}")
                 return cached
 
-        # 2. Проверяем кэш в БД
         db_cached = await self._get_from_db_cache(city)
         if db_cached and not force_refresh:
-            logger.debug(f"Используем БД кэш для {city}")
             await self._save_to_memory_cache(city, db_cached)
             return db_cached
 
-        # 3. Запрашиваем у API
         try:
             weather_data = await self._fetch_from_api(city)
             await self._save_to_cache(city, weather_data)
             return weather_data
         except Exception as e:
-            logger.error(f"Ошибка получения погоды для {city}: {e}")
-            # Возвращаем кэшированные данные, даже если устарели
+            logger.error(f"Weather API error for {city}: {e}")
             fallback = db_cached or cached
             if fallback:
-                logger.warning(f"Возвращаем устаревшие данные для {city}")
                 return fallback
             raise
 
     async def _fetch_from_api(self, city: str) -> WeatherData:
-        """Запрос данных с WeatherAPI.com"""
         if not settings.WEATHERAPI_KEY:
-            raise ValueError("API ключ не настроен в .env файле")
+            raise ValueError("API key not configured")
 
         url = f"{self.base_url}/current.json"
         params = {
@@ -126,8 +101,8 @@ class WeatherAPI:
         async with self.session.get(url, params=params, timeout=10) as response:
             if response.status != 200:
                 error_text = await response.text()
-                logger.error(f"API ошибка {response.status}: {error_text}")
-                raise Exception(f"API вернул ошибку {response.status}")
+                logger.error(f"API error {response.status}: {error_text}")
+                raise Exception(f"API returned error {response.status}")
 
             data = await response.json()
 
@@ -140,13 +115,12 @@ class WeatherAPI:
                 wind_speed=data["current"]["wind_kph"],
                 pressure=data["current"]["pressure_mb"],
                 icon=data["current"]["condition"]["icon"],
-                sunrise=None,  # Для sunrise/sunset нужен другой эндпоинт
+                sunrise=None,
                 sunset=None,
                 updated_at=datetime.now()
             )
 
     async def _get_from_cache(self, city: str) -> Optional[WeatherData]:
-        """Получение из in-memory кэша"""
         if city in self.cache:
             cached_time, data = self.cache[city]
             if datetime.now() - cached_time < self.cache_ttl:
@@ -154,7 +128,6 @@ class WeatherAPI:
         return None
 
     async def _get_from_db_cache(self, city: str) -> Optional[WeatherData]:
-        """Получение из БД кэша"""
         async with get_db() as session:
             result = await session.execute(
                 "SELECT * FROM weather_cache WHERE city = :city AND expires_at > :now",
@@ -179,11 +152,8 @@ class WeatherAPI:
         return None
 
     async def _save_to_cache(self, city: str, data: WeatherData):
-        """Сохранение во все уровни кэша"""
-        # 1. In-memory кэш
         self.cache[city] = (datetime.now(), data)
 
-        # 2. БД кэш
         async with get_db() as session:
             await session.execute("""
                 INSERT OR REPLACE INTO weather_cache 
@@ -208,12 +178,6 @@ class WeatherAPI:
             await session.commit()
 
     async def validate_city(self, city: str) -> Tuple[bool, Optional[str]]:
-        """
-        Проверяет существование города.
-
-        Returns:
-            (is_valid, error_message)
-        """
         url = f"{self.base_url}/search.json"
         params = {
             "key": settings.WEATHERAPI_KEY,
@@ -228,11 +192,10 @@ class WeatherAPI:
                 elif response.status == 400:
                     return False, "Город не найден"
                 else:
-                    return False, f"API ошибка: {response.status}"
+                    return False, f"API error: {response.status}"
         except Exception as e:
-            logger.error(f"Ошибка валидации города {city}: {e}")
-            return True, None  # При ошибке сети считаем город валидным
+            logger.error(f"City validation error for {city}: {e}")
+            return True, None
 
 
-# Глобальный инстанс для использования
 weather_api = WeatherAPI()

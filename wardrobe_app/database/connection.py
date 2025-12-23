@@ -24,12 +24,16 @@ async def get_db():
         finally:
             await session.close()
 
+
 async def init_db():
+    """Инициализация БД - создает таблицы только если их нет"""
     from .models import Base
+
     async with engine.begin() as conn:
-        await conn.run_sync(Base.metadata.drop_all)
+        # Создаем таблицы ТОЛЬКО если их нет
         await conn.run_sync(Base.metadata.create_all)
-    logger.info("✅ Таблицы созданы")
+
+    logger.info("✅ Таблицы готовы (созданы если не существовали)")
 
 async def close_db():
     await engine.dispose()

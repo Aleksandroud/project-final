@@ -3486,3 +3486,879 @@ CREATE TABLE user_preferences (
 2025-12-23 21:22:17,959 - apscheduler.scheduler - INFO - Scheduler has been shut down
 2025-12-23 21:22:17,959 - aiogram.dispatcher - INFO - Polling stopped for bot @Garderobny_bot id=8582666055 - 'Гардеробный @garderobny'
 2025-12-23 21:22:17,960 - aiogram.dispatcher - INFO - Polling stopped
+2025-12-23 21:22:22,523 - __main__ - INFO - 🚀 Запуск гардеробного бота...
+2025-12-23 21:22:22,525 - sqlalchemy.engine.Engine - INFO - BEGIN (implicit)
+2025-12-23 21:22:22,525 - sqlalchemy.engine.Engine - INFO - PRAGMA main.table_info("users")
+2025-12-23 21:22:22,525 - sqlalchemy.engine.Engine - INFO - [raw sql] ()
+2025-12-23 21:22:22,526 - sqlalchemy.engine.Engine - INFO - PRAGMA main.table_info("user_preferences")
+2025-12-23 21:22:22,526 - sqlalchemy.engine.Engine - INFO - [raw sql] ()
+2025-12-23 21:22:22,527 - sqlalchemy.engine.Engine - INFO - PRAGMA main.table_info("weather_cache")
+2025-12-23 21:22:22,527 - sqlalchemy.engine.Engine - INFO - [raw sql] ()
+2025-12-23 21:22:22,528 - sqlalchemy.engine.Engine - INFO - PRAGMA main.table_info("system_stats")
+2025-12-23 21:22:22,528 - sqlalchemy.engine.Engine - INFO - [raw sql] ()
+2025-12-23 21:22:22,529 - sqlalchemy.engine.Engine - INFO - 
+DROP TABLE user_preferences
+2025-12-23 21:22:22,529 - sqlalchemy.engine.Engine - INFO - [no key 0.00012s] ()
+2025-12-23 21:22:22,541 - sqlalchemy.engine.Engine - INFO - 
+DROP TABLE system_stats
+2025-12-23 21:22:22,541 - sqlalchemy.engine.Engine - INFO - [no key 0.00016s] ()
+2025-12-23 21:22:22,550 - sqlalchemy.engine.Engine - INFO - 
+DROP TABLE weather_cache
+2025-12-23 21:22:22,550 - sqlalchemy.engine.Engine - INFO - [no key 0.00016s] ()
+2025-12-23 21:22:22,559 - sqlalchemy.engine.Engine - INFO - 
+DROP TABLE users
+2025-12-23 21:22:22,559 - sqlalchemy.engine.Engine - INFO - [no key 0.00012s] ()
+2025-12-23 21:22:22,566 - sqlalchemy.engine.Engine - INFO - PRAGMA main.table_info("users")
+2025-12-23 21:22:22,566 - sqlalchemy.engine.Engine - INFO - [raw sql] ()
+2025-12-23 21:22:22,567 - sqlalchemy.engine.Engine - INFO - PRAGMA temp.table_info("users")
+2025-12-23 21:22:22,567 - sqlalchemy.engine.Engine - INFO - [raw sql] ()
+2025-12-23 21:22:22,568 - sqlalchemy.engine.Engine - INFO - PRAGMA main.table_info("user_preferences")
+2025-12-23 21:22:22,568 - sqlalchemy.engine.Engine - INFO - [raw sql] ()
+2025-12-23 21:22:22,568 - sqlalchemy.engine.Engine - INFO - PRAGMA temp.table_info("user_preferences")
+2025-12-23 21:22:22,568 - sqlalchemy.engine.Engine - INFO - [raw sql] ()
+2025-12-23 21:22:22,569 - sqlalchemy.engine.Engine - INFO - PRAGMA main.table_info("weather_cache")
+2025-12-23 21:22:22,569 - sqlalchemy.engine.Engine - INFO - [raw sql] ()
+2025-12-23 21:22:22,569 - sqlalchemy.engine.Engine - INFO - PRAGMA temp.table_info("weather_cache")
+2025-12-23 21:22:22,569 - sqlalchemy.engine.Engine - INFO - [raw sql] ()
+2025-12-23 21:22:22,570 - sqlalchemy.engine.Engine - INFO - PRAGMA main.table_info("system_stats")
+2025-12-23 21:22:22,570 - sqlalchemy.engine.Engine - INFO - [raw sql] ()
+2025-12-23 21:22:22,570 - sqlalchemy.engine.Engine - INFO - PRAGMA temp.table_info("system_stats")
+2025-12-23 21:22:22,570 - sqlalchemy.engine.Engine - INFO - [raw sql] ()
+2025-12-23 21:22:22,571 - sqlalchemy.engine.Engine - INFO - 
+CREATE TABLE users (
+	id INTEGER NOT NULL, 
+	telegram_id INTEGER NOT NULL, 
+	username VARCHAR(100), 
+	first_name VARCHAR(100), 
+	created_at DATETIME, 
+	PRIMARY KEY (id)
+)
+
+
+2025-12-23 21:22:22,571 - sqlalchemy.engine.Engine - INFO - [no key 0.00008s] ()
+2025-12-23 21:22:22,578 - sqlalchemy.engine.Engine - INFO - CREATE UNIQUE INDEX ix_users_telegram_id ON users (telegram_id)
+2025-12-23 21:22:22,579 - sqlalchemy.engine.Engine - INFO - [no key 0.00010s] ()
+2025-12-23 21:22:22,586 - sqlalchemy.engine.Engine - INFO - 
+CREATE TABLE weather_cache (
+	city VARCHAR(100) NOT NULL, 
+	temperature FLOAT, 
+	feels_like FLOAT, 
+	conditions VARCHAR(100), 
+	humidity INTEGER, 
+	wind_speed FLOAT, 
+	pressure INTEGER, 
+	icon VARCHAR(10), 
+	sunrise INTEGER, 
+	sunset INTEGER, 
+	updated_at DATETIME, 
+	expires_at DATETIME, 
+	PRIMARY KEY (city)
+)
+
+
+2025-12-23 21:22:22,586 - sqlalchemy.engine.Engine - INFO - [no key 0.00012s] ()
+2025-12-23 21:22:22,593 - sqlalchemy.engine.Engine - INFO - 
+CREATE TABLE system_stats (
+	id INTEGER NOT NULL, 
+	timestamp DATETIME, 
+	cache_size INTEGER, 
+	db_cache_size INTEGER, 
+	redis_connected BOOLEAN, 
+	PRIMARY KEY (id)
+)
+
+
+2025-12-23 21:22:22,594 - sqlalchemy.engine.Engine - INFO - [no key 0.00016s] ()
+2025-12-23 21:22:22,601 - sqlalchemy.engine.Engine - INFO - 
+CREATE TABLE user_preferences (
+	id INTEGER NOT NULL, 
+	user_id INTEGER, 
+	name VARCHAR(100) NOT NULL, 
+	gender VARCHAR(6) NOT NULL, 
+	city VARCHAR(100) NOT NULL, 
+	clothing_style INTEGER NOT NULL, 
+	wants_dispatch BOOLEAN, 
+	timezone VARCHAR(10), 
+	dispatch_time VARCHAR(5), 
+	created_at DATETIME, 
+	PRIMARY KEY (id), 
+	UNIQUE (user_id), 
+	FOREIGN KEY(user_id) REFERENCES users (id)
+)
+
+
+2025-12-23 21:22:22,601 - sqlalchemy.engine.Engine - INFO - [no key 0.00009s] ()
+2025-12-23 21:22:22,609 - sqlalchemy.engine.Engine - INFO - COMMIT
+2025-12-23 21:22:22,609 - wardrobe_app.database.connection - INFO - ✅ Таблицы созданы
+2025-12-23 21:22:22,609 - __main__ - INFO - ✅ База данных готова
+2025-12-23 21:22:22,609 - __main__ - INFO - ✅ Кэш инициализирован
+2025-12-23 21:22:22,828 - wardrobe_app.scheduler - INFO - 🔄 Инициализация планировщика задач...
+2025-12-23 21:22:22,831 - apscheduler.scheduler - INFO - Adding job tentatively -- it will be properly scheduled when the scheduler starts
+2025-12-23 21:22:22,831 - apscheduler.scheduler - INFO - Adding job tentatively -- it will be properly scheduled when the scheduler starts
+2025-12-23 21:22:22,831 - apscheduler.scheduler - INFO - Adding job tentatively -- it will be properly scheduled when the scheduler starts
+2025-12-23 21:22:22,831 - apscheduler.scheduler - INFO - Adding job tentatively -- it will be properly scheduled when the scheduler starts
+2025-12-23 21:22:22,831 - apscheduler.scheduler - INFO - Adding job tentatively -- it will be properly scheduled when the scheduler starts
+2025-12-23 21:22:22,831 - wardrobe_app.scheduler - INFO - Настроено 5 задач
+2025-12-23 21:22:22,831 - wardrobe_app.scheduler - INFO - ✅ Планировщик инициализирован
+2025-12-23 21:22:22,831 - apscheduler.scheduler - INFO - Added job "Утренняя рассылка рекомендаций" to job store "default"
+2025-12-23 21:22:22,831 - apscheduler.scheduler - INFO - Added job "Обновление кэша погоды" to job store "default"
+2025-12-23 21:22:22,832 - apscheduler.scheduler - INFO - Added job "Очистка устаревшего кэша" to job store "default"
+2025-12-23 21:22:22,832 - apscheduler.scheduler - INFO - Added job "Логирование системной статистики" to job store "default"
+2025-12-23 21:22:22,832 - apscheduler.scheduler - INFO - Added job "Проверка работоспособности системы" to job store "default"
+2025-12-23 21:22:22,832 - apscheduler.scheduler - INFO - Scheduler started
+2025-12-23 21:22:22,832 - wardrobe_app.scheduler - INFO - 🚀 Планировщик задач запущен
+2025-12-23 21:22:22,832 - wardrobe_app.scheduler - INFO - Активные задачи (5):
+2025-12-23 21:22:22,832 - wardrobe_app.scheduler - INFO -   • Проверка работоспособности системы (health_check) - следующий запуск: 2025-12-23 21:52:22.831440+03:00
+2025-12-23 21:22:22,832 - wardrobe_app.scheduler - INFO -   • Утренняя рассылка рекомендаций (morning_dispatch) - следующий запуск: 2025-12-23 22:22:22.830439+03:00
+2025-12-23 21:22:22,832 - wardrobe_app.scheduler - INFO -   • Логирование системной статистики (system_stats) - следующий запуск: 2025-12-23 22:22:22.831440+03:00
+2025-12-23 21:22:22,832 - wardrobe_app.scheduler - INFO -   • Обновление кэша погоды (update_weather_cache) - следующий запуск: 2025-12-24 00:00:00+00:00
+2025-12-23 21:22:22,832 - wardrobe_app.scheduler - INFO -   • Очистка устаревшего кэша (cleanup_cache) - следующий запуск: 2025-12-24 03:22:22.831440+03:00
+2025-12-23 21:22:22,832 - __main__ - INFO - 🤖 Бот запущен. Ожидаю сообщений...
+2025-12-23 21:22:22,832 - aiogram.dispatcher - INFO - Start polling
+2025-12-23 21:22:22,985 - aiogram.dispatcher - INFO - Run polling for bot @Garderobny_bot id=8582666055 - 'Гардеробный @garderobny'
+2025-12-23 21:22:26,813 - aiogram.event - INFO - Update id=75659825 is handled. Duration 266 ms by bot id=8582666055
+2025-12-23 21:22:30,251 - aiogram.event - INFO - Update id=75659826 is handled. Duration 78 ms by bot id=8582666055
+2025-12-23 21:22:31,785 - aiogram.event - INFO - Update id=75659827 is handled. Duration 233 ms by bot id=8582666055
+2025-12-23 21:22:34,575 - aiogram.event - INFO - Update id=75659828 is handled. Duration 187 ms by bot id=8582666055
+2025-12-23 21:22:37,934 - aiogram.event - INFO - Update id=75659829 is handled. Duration 202 ms by bot id=8582666055
+2025-12-23 21:22:55,708 - aiogram.event - INFO - Update id=75659830 is handled. Duration 93 ms by bot id=8582666055
+2025-12-23 21:23:05,619 - aiogram.event - INFO - Update id=75659831 is handled. Duration 109 ms by bot id=8582666055
+2025-12-23 21:23:11,316 - aiogram.event - INFO - Update id=75659832 is handled. Duration 421 ms by bot id=8582666055
+2025-12-23 21:23:12,209 - sqlalchemy.engine.Engine - INFO - BEGIN (implicit)
+2025-12-23 21:23:12,213 - sqlalchemy.engine.Engine - INFO - SELECT users.id, users.telegram_id, users.username, users.first_name, users.created_at 
+FROM users 
+WHERE users.telegram_id = ?
+2025-12-23 21:23:12,214 - sqlalchemy.engine.Engine - INFO - [generated in 0.00019s] (8582666055,)
+2025-12-23 21:23:12,216 - sqlalchemy.engine.Engine - INFO - INSERT INTO users (telegram_id, username, first_name, created_at) VALUES (?, ?, ?, ?)
+2025-12-23 21:23:12,216 - sqlalchemy.engine.Engine - INFO - [generated in 0.00018s] (8582666055, 'Garderobny_bot', 'Гардеробный @garderobny', '2025-12-23 21:23:12.215587')
+2025-12-23 21:23:12,219 - sqlalchemy.engine.Engine - INFO - SELECT user_preferences.id, user_preferences.user_id, user_preferences.name, user_preferences.gender, user_preferences.city, user_preferences.clothing_style, user_preferences.wants_dispatch, user_preferences.timezone, user_preferences.dispatch_time, user_preferences.created_at 
+FROM user_preferences 
+WHERE user_preferences.user_id = ?
+2025-12-23 21:23:12,220 - sqlalchemy.engine.Engine - INFO - [generated in 0.00013s] (1,)
+2025-12-23 21:23:12,221 - sqlalchemy.engine.Engine - INFO - INSERT INTO user_preferences (user_id, name, gender, city, clothing_style, wants_dispatch, timezone, dispatch_time, created_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
+2025-12-23 21:23:12,221 - sqlalchemy.engine.Engine - INFO - [generated in 0.00014s] (1, 'Ярослав', 'FEMALE', 'Москва', 2, 1, 'UTC+3', '08:00', '2025-12-23 21:23:12.221586')
+2025-12-23 21:23:12,222 - sqlalchemy.engine.Engine - INFO - COMMIT
+2025-12-23 21:23:12,229 - sqlalchemy.engine.Engine - INFO - BEGIN (implicit)
+2025-12-23 21:23:12,229 - sqlalchemy.engine.Engine - INFO - SELECT user_preferences.id, user_preferences.user_id, user_preferences.name, user_preferences.gender, user_preferences.city, user_preferences.clothing_style, user_preferences.wants_dispatch, user_preferences.timezone, user_preferences.dispatch_time, user_preferences.created_at 
+FROM user_preferences 
+WHERE user_preferences.user_id = ?
+2025-12-23 21:23:12,231 - sqlalchemy.engine.Engine - INFO - [cached since 0.01084s ago] (1,)
+2025-12-23 21:23:12,231 - sqlalchemy.engine.Engine - INFO - ROLLBACK
+2025-12-23 21:23:12,955 - aiogram.event - INFO - Update id=75659833 is handled. Duration 812 ms by bot id=8582666055
+2025-12-23 21:23:22,727 - sqlalchemy.engine.Engine - INFO - BEGIN (implicit)
+2025-12-23 21:23:22,727 - sqlalchemy.engine.Engine - INFO - SELECT users.id, users.telegram_id, users.username, users.first_name, users.created_at 
+FROM users 
+WHERE users.telegram_id = ?
+2025-12-23 21:23:22,727 - sqlalchemy.engine.Engine - INFO - [cached since 10.51s ago] (981466212,)
+2025-12-23 21:23:22,728 - sqlalchemy.engine.Engine - INFO - ROLLBACK
+2025-12-23 21:23:22,894 - aiogram.event - INFO - Update id=75659834 is handled. Duration 172 ms by bot id=8582666055
+2025-12-23 21:33:56,819 - wardrobe_app.scheduler - INFO - Получен сигнал 2, останавливаю планировщик...
+2025-12-23 21:33:56,819 - wardrobe_app.scheduler - INFO - 🛑 Планировщик остановлен
+2025-12-23 21:33:56,820 - apscheduler.scheduler - INFO - Scheduler has been shut down
+2025-12-23 21:33:56,820 - aiogram.dispatcher - INFO - Polling stopped for bot @Garderobny_bot id=8582666055 - 'Гардеробный @garderobny'
+2025-12-23 21:33:56,820 - aiogram.dispatcher - INFO - Polling stopped
+2025-12-23 21:34:01,495 - __main__ - INFO - 🚀 Запуск гардеробного бота...
+2025-12-23 21:34:01,497 - sqlalchemy.engine.Engine - INFO - BEGIN (implicit)
+2025-12-23 21:34:01,497 - sqlalchemy.engine.Engine - INFO - PRAGMA main.table_info("users")
+2025-12-23 21:34:01,497 - sqlalchemy.engine.Engine - INFO - [raw sql] ()
+2025-12-23 21:34:01,499 - sqlalchemy.engine.Engine - INFO - PRAGMA main.table_info("user_preferences")
+2025-12-23 21:34:01,499 - sqlalchemy.engine.Engine - INFO - [raw sql] ()
+2025-12-23 21:34:01,501 - sqlalchemy.engine.Engine - INFO - PRAGMA main.table_info("weather_cache")
+2025-12-23 21:34:01,501 - sqlalchemy.engine.Engine - INFO - [raw sql] ()
+2025-12-23 21:34:01,501 - sqlalchemy.engine.Engine - INFO - PRAGMA main.table_info("system_stats")
+2025-12-23 21:34:01,501 - sqlalchemy.engine.Engine - INFO - [raw sql] ()
+2025-12-23 21:34:01,502 - sqlalchemy.engine.Engine - INFO - 
+DROP TABLE user_preferences
+2025-12-23 21:34:01,502 - sqlalchemy.engine.Engine - INFO - [no key 0.00009s] ()
+2025-12-23 21:34:01,511 - sqlalchemy.engine.Engine - INFO - 
+DROP TABLE system_stats
+2025-12-23 21:34:01,511 - sqlalchemy.engine.Engine - INFO - [no key 0.00009s] ()
+2025-12-23 21:34:01,517 - sqlalchemy.engine.Engine - INFO - 
+DROP TABLE weather_cache
+2025-12-23 21:34:01,517 - sqlalchemy.engine.Engine - INFO - [no key 0.00009s] ()
+2025-12-23 21:34:01,524 - sqlalchemy.engine.Engine - INFO - 
+DROP TABLE users
+2025-12-23 21:34:01,524 - sqlalchemy.engine.Engine - INFO - [no key 0.00014s] ()
+2025-12-23 21:34:01,532 - sqlalchemy.engine.Engine - INFO - PRAGMA main.table_info("users")
+2025-12-23 21:34:01,532 - sqlalchemy.engine.Engine - INFO - [raw sql] ()
+2025-12-23 21:34:01,532 - sqlalchemy.engine.Engine - INFO - PRAGMA temp.table_info("users")
+2025-12-23 21:34:01,532 - sqlalchemy.engine.Engine - INFO - [raw sql] ()
+2025-12-23 21:34:01,533 - sqlalchemy.engine.Engine - INFO - PRAGMA main.table_info("user_preferences")
+2025-12-23 21:34:01,533 - sqlalchemy.engine.Engine - INFO - [raw sql] ()
+2025-12-23 21:34:01,534 - sqlalchemy.engine.Engine - INFO - PRAGMA temp.table_info("user_preferences")
+2025-12-23 21:34:01,534 - sqlalchemy.engine.Engine - INFO - [raw sql] ()
+2025-12-23 21:34:01,534 - sqlalchemy.engine.Engine - INFO - PRAGMA main.table_info("weather_cache")
+2025-12-23 21:34:01,535 - sqlalchemy.engine.Engine - INFO - [raw sql] ()
+2025-12-23 21:34:01,535 - sqlalchemy.engine.Engine - INFO - PRAGMA temp.table_info("weather_cache")
+2025-12-23 21:34:01,535 - sqlalchemy.engine.Engine - INFO - [raw sql] ()
+2025-12-23 21:34:01,535 - sqlalchemy.engine.Engine - INFO - PRAGMA main.table_info("system_stats")
+2025-12-23 21:34:01,535 - sqlalchemy.engine.Engine - INFO - [raw sql] ()
+2025-12-23 21:34:01,536 - sqlalchemy.engine.Engine - INFO - PRAGMA temp.table_info("system_stats")
+2025-12-23 21:34:01,536 - sqlalchemy.engine.Engine - INFO - [raw sql] ()
+2025-12-23 21:34:01,536 - sqlalchemy.engine.Engine - INFO - 
+CREATE TABLE users (
+	id INTEGER NOT NULL, 
+	telegram_id INTEGER NOT NULL, 
+	username VARCHAR(100), 
+	first_name VARCHAR(100), 
+	created_at DATETIME, 
+	PRIMARY KEY (id)
+)
+
+
+2025-12-23 21:34:01,536 - sqlalchemy.engine.Engine - INFO - [no key 0.00008s] ()
+2025-12-23 21:34:01,543 - sqlalchemy.engine.Engine - INFO - CREATE UNIQUE INDEX ix_users_telegram_id ON users (telegram_id)
+2025-12-23 21:34:01,543 - sqlalchemy.engine.Engine - INFO - [no key 0.00009s] ()
+2025-12-23 21:34:01,551 - sqlalchemy.engine.Engine - INFO - 
+CREATE TABLE weather_cache (
+	city VARCHAR(100) NOT NULL, 
+	temperature FLOAT, 
+	feels_like FLOAT, 
+	conditions VARCHAR(100), 
+	humidity INTEGER, 
+	wind_speed FLOAT, 
+	pressure INTEGER, 
+	icon VARCHAR(10), 
+	sunrise INTEGER, 
+	sunset INTEGER, 
+	updated_at DATETIME, 
+	expires_at DATETIME, 
+	PRIMARY KEY (city)
+)
+
+
+2025-12-23 21:34:01,551 - sqlalchemy.engine.Engine - INFO - [no key 0.00009s] ()
+2025-12-23 21:34:01,558 - sqlalchemy.engine.Engine - INFO - 
+CREATE TABLE system_stats (
+	id INTEGER NOT NULL, 
+	timestamp DATETIME, 
+	cache_size INTEGER, 
+	db_cache_size INTEGER, 
+	redis_connected BOOLEAN, 
+	PRIMARY KEY (id)
+)
+
+
+2025-12-23 21:34:01,558 - sqlalchemy.engine.Engine - INFO - [no key 0.00009s] ()
+2025-12-23 21:34:01,568 - sqlalchemy.engine.Engine - INFO - 
+CREATE TABLE user_preferences (
+	id INTEGER NOT NULL, 
+	user_id INTEGER, 
+	name VARCHAR(100) NOT NULL, 
+	gender VARCHAR(6) NOT NULL, 
+	city VARCHAR(100) NOT NULL, 
+	clothing_style INTEGER NOT NULL, 
+	wants_dispatch BOOLEAN, 
+	timezone VARCHAR(10), 
+	dispatch_time VARCHAR(5), 
+	created_at DATETIME, 
+	PRIMARY KEY (id), 
+	UNIQUE (user_id), 
+	FOREIGN KEY(user_id) REFERENCES users (id)
+)
+
+
+2025-12-23 21:34:01,568 - sqlalchemy.engine.Engine - INFO - [no key 0.00014s] ()
+2025-12-23 21:34:01,576 - sqlalchemy.engine.Engine - INFO - COMMIT
+2025-12-23 21:34:01,576 - wardrobe_app.database.connection - INFO - ✅ Таблицы созданы
+2025-12-23 21:34:01,576 - __main__ - INFO - ✅ База данных готова
+2025-12-23 21:34:01,576 - __main__ - INFO - ✅ Кэш инициализирован
+2025-12-23 21:34:01,770 - wardrobe_app.scheduler - INFO - 🔄 Инициализация планировщика задач...
+2025-12-23 21:34:01,773 - apscheduler.scheduler - INFO - Adding job tentatively -- it will be properly scheduled when the scheduler starts
+2025-12-23 21:34:01,773 - apscheduler.scheduler - INFO - Adding job tentatively -- it will be properly scheduled when the scheduler starts
+2025-12-23 21:34:01,773 - apscheduler.scheduler - INFO - Adding job tentatively -- it will be properly scheduled when the scheduler starts
+2025-12-23 21:34:01,774 - apscheduler.scheduler - INFO - Adding job tentatively -- it will be properly scheduled when the scheduler starts
+2025-12-23 21:34:01,774 - apscheduler.scheduler - INFO - Adding job tentatively -- it will be properly scheduled when the scheduler starts
+2025-12-23 21:34:01,774 - wardrobe_app.scheduler - INFO - Настроено 5 задач
+2025-12-23 21:34:01,774 - wardrobe_app.scheduler - INFO - ✅ Планировщик инициализирован
+2025-12-23 21:34:01,774 - apscheduler.scheduler - INFO - Added job "Утренняя рассылка рекомендаций" to job store "default"
+2025-12-23 21:34:01,774 - apscheduler.scheduler - INFO - Added job "Обновление кэша погоды" to job store "default"
+2025-12-23 21:34:01,774 - apscheduler.scheduler - INFO - Added job "Очистка устаревшего кэша" to job store "default"
+2025-12-23 21:34:01,774 - apscheduler.scheduler - INFO - Added job "Логирование системной статистики" to job store "default"
+2025-12-23 21:34:01,774 - apscheduler.scheduler - INFO - Added job "Проверка работоспособности системы" to job store "default"
+2025-12-23 21:34:01,774 - apscheduler.scheduler - INFO - Scheduler started
+2025-12-23 21:34:01,774 - wardrobe_app.scheduler - INFO - 🚀 Планировщик задач запущен
+2025-12-23 21:34:01,774 - wardrobe_app.scheduler - INFO - Активные задачи (5):
+2025-12-23 21:34:01,774 - wardrobe_app.scheduler - INFO -   • Проверка работоспособности системы (health_check) - следующий запуск: 2025-12-23 22:04:01.774309+03:00
+2025-12-23 21:34:01,774 - wardrobe_app.scheduler - INFO -   • Утренняя рассылка рекомендаций (morning_dispatch) - следующий запуск: 2025-12-23 22:34:01.773308+03:00
+2025-12-23 21:34:01,774 - wardrobe_app.scheduler - INFO -   • Логирование системной статистики (system_stats) - следующий запуск: 2025-12-23 22:34:01.774309+03:00
+2025-12-23 21:34:01,774 - wardrobe_app.scheduler - INFO -   • Обновление кэша погоды (update_weather_cache) - следующий запуск: 2025-12-24 00:00:00+00:00
+2025-12-23 21:34:01,775 - wardrobe_app.scheduler - INFO -   • Очистка устаревшего кэша (cleanup_cache) - следующий запуск: 2025-12-24 03:34:01.773308+03:00
+2025-12-23 21:34:01,775 - __main__ - INFO - 🤖 Бот запущен. Ожидаю сообщений...
+2025-12-23 21:34:01,775 - aiogram.dispatcher - INFO - Start polling
+2025-12-23 21:34:01,945 - aiogram.dispatcher - INFO - Run polling for bot @Garderobny_bot id=8582666055 - 'Гардеробный @garderobny'
+2025-12-23 21:34:20,935 - aiogram.event - INFO - Update id=75659835 is handled. Duration 1280 ms by bot id=8582666055
+2025-12-23 21:34:26,943 - aiogram.event - INFO - Update id=75659836 is handled. Duration 93 ms by bot id=8582666055
+2025-12-23 21:34:29,808 - aiogram.event - INFO - Update id=75659837 is handled. Duration 297 ms by bot id=8582666055
+2025-12-23 21:34:33,455 - aiogram.event - INFO - Update id=75659838 is handled. Duration 312 ms by bot id=8582666055
+2025-12-23 21:36:05,214 - aiogram.event - INFO - Update id=75659839 is handled. Duration 140 ms by bot id=8582666055
+2025-12-23 21:36:10,402 - aiogram.event - INFO - Update id=75659840 is handled. Duration 125 ms by bot id=8582666055
+2025-12-23 21:36:15,328 - aiogram.event - INFO - Update id=75659841 is handled. Duration 234 ms by bot id=8582666055
+2025-12-23 21:36:16,631 - sqlalchemy.engine.Engine - INFO - BEGIN (implicit)
+2025-12-23 21:36:16,637 - sqlalchemy.engine.Engine - INFO - SELECT users.id, users.telegram_id, users.username, users.first_name, users.created_at 
+FROM users 
+WHERE users.telegram_id = ?
+2025-12-23 21:36:16,637 - sqlalchemy.engine.Engine - INFO - [generated in 0.00019s] (8582666055,)
+2025-12-23 21:36:16,638 - sqlalchemy.engine.Engine - INFO - INSERT INTO users (telegram_id, username, first_name, created_at) VALUES (?, ?, ?, ?)
+2025-12-23 21:36:16,638 - sqlalchemy.engine.Engine - INFO - [generated in 0.00016s] (8582666055, 'Garderobny_bot', 'Гардеробный @garderobny', '2025-12-23 21:36:16.638147')
+2025-12-23 21:36:16,642 - sqlalchemy.engine.Engine - INFO - SELECT user_preferences.id, user_preferences.user_id, user_preferences.name, user_preferences.gender, user_preferences.city, user_preferences.clothing_style, user_preferences.wants_dispatch, user_preferences.timezone, user_preferences.dispatch_time, user_preferences.created_at 
+FROM user_preferences 
+WHERE user_preferences.user_id = ?
+2025-12-23 21:36:16,642 - sqlalchemy.engine.Engine - INFO - [generated in 0.00016s] (1,)
+2025-12-23 21:36:16,645 - sqlalchemy.engine.Engine - INFO - INSERT INTO user_preferences (user_id, name, gender, city, clothing_style, wants_dispatch, timezone, dispatch_time, created_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
+2025-12-23 21:36:16,645 - sqlalchemy.engine.Engine - INFO - [generated in 0.00015s] (1, 'Ярослав', 'MALE', 'Москва', 1, 1, 'UTC+3', '08:00', '2025-12-23 21:36:16.644165')
+2025-12-23 21:36:16,646 - sqlalchemy.engine.Engine - INFO - COMMIT
+2025-12-23 21:36:16,805 - aiogram.event - INFO - Update id=75659842 is handled. Duration 266 ms by bot id=8582666055
+2025-12-23 21:37:07,046 - sqlalchemy.engine.Engine - INFO - BEGIN (implicit)
+2025-12-23 21:37:07,046 - sqlalchemy.engine.Engine - INFO - SELECT users.id, users.telegram_id, users.username, users.first_name, users.created_at 
+FROM users 
+WHERE users.telegram_id = ?
+2025-12-23 21:37:07,046 - sqlalchemy.engine.Engine - INFO - [cached since 50.41s ago] (981466212,)
+2025-12-23 21:37:07,048 - sqlalchemy.engine.Engine - INFO - ROLLBACK
+2025-12-23 21:37:07,138 - aiogram.event - INFO - Update id=75659843 is handled. Duration 94 ms by bot id=8582666055
+2025-12-23 21:40:53,849 - wardrobe_app.scheduler - INFO - Получен сигнал 2, останавливаю планировщик...
+2025-12-23 21:40:53,849 - wardrobe_app.scheduler - INFO - 🛑 Планировщик остановлен
+2025-12-23 21:40:53,850 - apscheduler.scheduler - INFO - Scheduler has been shut down
+2025-12-23 21:40:53,850 - aiogram.dispatcher - INFO - Polling stopped for bot @Garderobny_bot id=8582666055 - 'Гардеробный @garderobny'
+2025-12-23 21:40:53,850 - aiogram.dispatcher - INFO - Polling stopped
+2025-12-23 21:41:06,336 - __main__ - INFO - 🚀 Запуск гардеробного бота...
+2025-12-23 21:41:06,338 - sqlalchemy.engine.Engine - INFO - BEGIN (implicit)
+2025-12-23 21:41:06,338 - sqlalchemy.engine.Engine - INFO - PRAGMA main.table_info("users")
+2025-12-23 21:41:06,338 - sqlalchemy.engine.Engine - INFO - [raw sql] ()
+2025-12-23 21:41:06,339 - sqlalchemy.engine.Engine - INFO - PRAGMA main.table_info("user_preferences")
+2025-12-23 21:41:06,341 - sqlalchemy.engine.Engine - INFO - [raw sql] ()
+2025-12-23 21:41:06,341 - sqlalchemy.engine.Engine - INFO - PRAGMA main.table_info("weather_cache")
+2025-12-23 21:41:06,341 - sqlalchemy.engine.Engine - INFO - [raw sql] ()
+2025-12-23 21:41:06,341 - sqlalchemy.engine.Engine - INFO - PRAGMA main.table_info("system_stats")
+2025-12-23 21:41:06,341 - sqlalchemy.engine.Engine - INFO - [raw sql] ()
+2025-12-23 21:41:06,342 - sqlalchemy.engine.Engine - INFO - 
+DROP TABLE user_preferences
+2025-12-23 21:41:06,342 - sqlalchemy.engine.Engine - INFO - [no key 0.00010s] ()
+2025-12-23 21:41:06,352 - sqlalchemy.engine.Engine - INFO - 
+DROP TABLE system_stats
+2025-12-23 21:41:06,352 - sqlalchemy.engine.Engine - INFO - [no key 0.00011s] ()
+2025-12-23 21:41:06,359 - sqlalchemy.engine.Engine - INFO - 
+DROP TABLE weather_cache
+2025-12-23 21:41:06,359 - sqlalchemy.engine.Engine - INFO - [no key 0.00010s] ()
+2025-12-23 21:41:06,367 - sqlalchemy.engine.Engine - INFO - 
+DROP TABLE users
+2025-12-23 21:41:06,367 - sqlalchemy.engine.Engine - INFO - [no key 0.00010s] ()
+2025-12-23 21:41:06,375 - sqlalchemy.engine.Engine - INFO - PRAGMA main.table_info("users")
+2025-12-23 21:41:06,375 - sqlalchemy.engine.Engine - INFO - [raw sql] ()
+2025-12-23 21:41:06,375 - sqlalchemy.engine.Engine - INFO - PRAGMA temp.table_info("users")
+2025-12-23 21:41:06,375 - sqlalchemy.engine.Engine - INFO - [raw sql] ()
+2025-12-23 21:41:06,375 - sqlalchemy.engine.Engine - INFO - PRAGMA main.table_info("user_preferences")
+2025-12-23 21:41:06,375 - sqlalchemy.engine.Engine - INFO - [raw sql] ()
+2025-12-23 21:41:06,376 - sqlalchemy.engine.Engine - INFO - PRAGMA temp.table_info("user_preferences")
+2025-12-23 21:41:06,376 - sqlalchemy.engine.Engine - INFO - [raw sql] ()
+2025-12-23 21:41:06,376 - sqlalchemy.engine.Engine - INFO - PRAGMA main.table_info("weather_cache")
+2025-12-23 21:41:06,376 - sqlalchemy.engine.Engine - INFO - [raw sql] ()
+2025-12-23 21:41:06,377 - sqlalchemy.engine.Engine - INFO - PRAGMA temp.table_info("weather_cache")
+2025-12-23 21:41:06,377 - sqlalchemy.engine.Engine - INFO - [raw sql] ()
+2025-12-23 21:41:06,377 - sqlalchemy.engine.Engine - INFO - PRAGMA main.table_info("system_stats")
+2025-12-23 21:41:06,377 - sqlalchemy.engine.Engine - INFO - [raw sql] ()
+2025-12-23 21:41:06,377 - sqlalchemy.engine.Engine - INFO - PRAGMA temp.table_info("system_stats")
+2025-12-23 21:41:06,378 - sqlalchemy.engine.Engine - INFO - [raw sql] ()
+2025-12-23 21:41:06,378 - sqlalchemy.engine.Engine - INFO - 
+CREATE TABLE users (
+	id INTEGER NOT NULL, 
+	telegram_id INTEGER NOT NULL, 
+	username VARCHAR(100), 
+	first_name VARCHAR(100), 
+	created_at DATETIME, 
+	PRIMARY KEY (id)
+)
+
+
+2025-12-23 21:41:06,378 - sqlalchemy.engine.Engine - INFO - [no key 0.00011s] ()
+2025-12-23 21:41:06,386 - sqlalchemy.engine.Engine - INFO - CREATE UNIQUE INDEX ix_users_telegram_id ON users (telegram_id)
+2025-12-23 21:41:06,386 - sqlalchemy.engine.Engine - INFO - [no key 0.00009s] ()
+2025-12-23 21:41:06,394 - sqlalchemy.engine.Engine - INFO - 
+CREATE TABLE weather_cache (
+	city VARCHAR(100) NOT NULL, 
+	temperature FLOAT, 
+	feels_like FLOAT, 
+	conditions VARCHAR(100), 
+	humidity INTEGER, 
+	wind_speed FLOAT, 
+	pressure INTEGER, 
+	icon VARCHAR(10), 
+	sunrise INTEGER, 
+	sunset INTEGER, 
+	updated_at DATETIME, 
+	expires_at DATETIME, 
+	PRIMARY KEY (city)
+)
+
+
+2025-12-23 21:41:06,394 - sqlalchemy.engine.Engine - INFO - [no key 0.00010s] ()
+2025-12-23 21:41:06,402 - sqlalchemy.engine.Engine - INFO - 
+CREATE TABLE system_stats (
+	id INTEGER NOT NULL, 
+	timestamp DATETIME, 
+	cache_size INTEGER, 
+	db_cache_size INTEGER, 
+	redis_connected BOOLEAN, 
+	PRIMARY KEY (id)
+)
+
+
+2025-12-23 21:41:06,403 - sqlalchemy.engine.Engine - INFO - [no key 0.00014s] ()
+2025-12-23 21:41:06,410 - sqlalchemy.engine.Engine - INFO - 
+CREATE TABLE user_preferences (
+	id INTEGER NOT NULL, 
+	user_id INTEGER, 
+	name VARCHAR(100) NOT NULL, 
+	gender VARCHAR(6) NOT NULL, 
+	city VARCHAR(100) NOT NULL, 
+	clothing_style INTEGER NOT NULL, 
+	wants_dispatch BOOLEAN, 
+	timezone VARCHAR(10), 
+	dispatch_time VARCHAR(5), 
+	created_at DATETIME, 
+	PRIMARY KEY (id), 
+	UNIQUE (user_id), 
+	FOREIGN KEY(user_id) REFERENCES users (id)
+)
+
+
+2025-12-23 21:41:06,410 - sqlalchemy.engine.Engine - INFO - [no key 0.00010s] ()
+2025-12-23 21:41:06,418 - sqlalchemy.engine.Engine - INFO - COMMIT
+2025-12-23 21:41:06,418 - wardrobe_app.database.connection - INFO - ✅ Таблицы созданы
+2025-12-23 21:41:06,418 - __main__ - INFO - ✅ База данных готова
+2025-12-23 21:41:06,418 - __main__ - INFO - ✅ Кэш инициализирован
+2025-12-23 21:41:06,618 - wardrobe_app.scheduler - INFO - 🔄 Инициализация планировщика задач...
+2025-12-23 21:41:06,621 - apscheduler.scheduler - INFO - Adding job tentatively -- it will be properly scheduled when the scheduler starts
+2025-12-23 21:41:06,621 - apscheduler.scheduler - INFO - Adding job tentatively -- it will be properly scheduled when the scheduler starts
+2025-12-23 21:41:06,621 - apscheduler.scheduler - INFO - Adding job tentatively -- it will be properly scheduled when the scheduler starts
+2025-12-23 21:41:06,622 - apscheduler.scheduler - INFO - Adding job tentatively -- it will be properly scheduled when the scheduler starts
+2025-12-23 21:41:06,622 - apscheduler.scheduler - INFO - Adding job tentatively -- it will be properly scheduled when the scheduler starts
+2025-12-23 21:41:06,623 - wardrobe_app.scheduler - INFO - Настроено 5 задач
+2025-12-23 21:41:06,623 - wardrobe_app.scheduler - INFO - ✅ Планировщик инициализирован
+2025-12-23 21:41:06,623 - apscheduler.scheduler - INFO - Added job "Утренняя рассылка рекомендаций" to job store "default"
+2025-12-23 21:41:06,623 - apscheduler.scheduler - INFO - Added job "Обновление кэша погоды" to job store "default"
+2025-12-23 21:41:06,624 - apscheduler.scheduler - INFO - Added job "Очистка устаревшего кэша" to job store "default"
+2025-12-23 21:41:06,624 - apscheduler.scheduler - INFO - Added job "Логирование системной статистики" to job store "default"
+2025-12-23 21:41:06,624 - apscheduler.scheduler - INFO - Added job "Проверка работоспособности системы" to job store "default"
+2025-12-23 21:41:06,624 - apscheduler.scheduler - INFO - Scheduler started
+2025-12-23 21:41:06,624 - wardrobe_app.scheduler - INFO - 🚀 Планировщик задач запущен
+2025-12-23 21:41:06,624 - wardrobe_app.scheduler - INFO - Активные задачи (5):
+2025-12-23 21:41:06,624 - wardrobe_app.scheduler - INFO -   • Проверка работоспособности системы (health_check) - следующий запуск: 2025-12-23 22:11:06.622757+03:00
+2025-12-23 21:41:06,624 - wardrobe_app.scheduler - INFO -   • Утренняя рассылка рекомендаций (morning_dispatch) - следующий запуск: 2025-12-23 22:41:06.620757+03:00
+2025-12-23 21:41:06,625 - wardrobe_app.scheduler - INFO -   • Логирование системной статистики (system_stats) - следующий запуск: 2025-12-23 22:41:06.622757+03:00
+2025-12-23 21:41:06,625 - wardrobe_app.scheduler - INFO -   • Обновление кэша погоды (update_weather_cache) - следующий запуск: 2025-12-24 00:00:00+00:00
+2025-12-23 21:41:06,625 - wardrobe_app.scheduler - INFO -   • Очистка устаревшего кэша (cleanup_cache) - следующий запуск: 2025-12-24 03:41:06.621758+03:00
+2025-12-23 21:41:06,625 - __main__ - INFO - 🤖 Бот запущен. Ожидаю сообщений...
+2025-12-23 21:41:06,625 - aiogram.dispatcher - INFO - Start polling
+2025-12-23 21:41:06,792 - aiogram.dispatcher - INFO - Run polling for bot @Garderobny_bot id=8582666055 - 'Гардеробный @garderobny'
+2025-12-23 21:41:25,505 - aiogram.event - INFO - Update id=75659844 is handled. Duration 219 ms by bot id=8582666055
+2025-12-23 21:41:30,327 - aiogram.event - INFO - Update id=75659845 is handled. Duration 77 ms by bot id=8582666055
+2025-12-23 21:41:31,783 - aiogram.event - INFO - Update id=75659846 is handled. Duration 235 ms by bot id=8582666055
+2025-12-23 21:41:35,240 - aiogram.event - INFO - Update id=75659847 is handled. Duration 250 ms by bot id=8582666055
+2025-12-23 21:41:36,469 - aiogram.event - INFO - Update id=75659848 is handled. Duration 233 ms by bot id=8582666055
+2025-12-23 21:41:42,071 - aiogram.event - INFO - Update id=75659849 is handled. Duration 156 ms by bot id=8582666055
+2025-12-23 21:41:46,667 - aiogram.event - INFO - Update id=75659850 is handled. Duration 483 ms by bot id=8582666055
+2025-12-23 21:41:47,967 - sqlalchemy.engine.Engine - INFO - BEGIN (implicit)
+2025-12-23 21:41:47,971 - sqlalchemy.engine.Engine - INFO - SELECT users.id, users.telegram_id, users.username, users.first_name, users.created_at 
+FROM users 
+WHERE users.telegram_id = ?
+2025-12-23 21:41:47,971 - sqlalchemy.engine.Engine - INFO - [generated in 0.00018s] (8582666055,)
+2025-12-23 21:41:47,973 - sqlalchemy.engine.Engine - INFO - INSERT INTO users (telegram_id, username, first_name, created_at) VALUES (?, ?, ?, ?)
+2025-12-23 21:41:47,973 - sqlalchemy.engine.Engine - INFO - [generated in 0.00018s] (8582666055, 'Garderobny_bot', 'Гардеробный @garderobny', '2025-12-23 21:41:47.972518')
+2025-12-23 21:41:47,977 - sqlalchemy.engine.Engine - INFO - SELECT user_preferences.id, user_preferences.user_id, user_preferences.name, user_preferences.gender, user_preferences.city, user_preferences.clothing_style, user_preferences.wants_dispatch, user_preferences.timezone, user_preferences.dispatch_time, user_preferences.created_at 
+FROM user_preferences 
+WHERE user_preferences.user_id = ?
+2025-12-23 21:41:47,977 - sqlalchemy.engine.Engine - INFO - [generated in 0.00013s] (1,)
+2025-12-23 21:41:47,978 - sqlalchemy.engine.Engine - INFO - INSERT INTO user_preferences (user_id, name, gender, city, clothing_style, wants_dispatch, timezone, dispatch_time, created_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
+2025-12-23 21:41:47,978 - sqlalchemy.engine.Engine - INFO - [generated in 0.00014s] (1, 'Ярослав', 'MALE', 'Москва', 1, 1, 'UTC+3', '08:00', '2025-12-23 21:41:47.978518')
+2025-12-23 21:41:47,979 - sqlalchemy.engine.Engine - INFO - COMMIT
+2025-12-23 21:41:48,150 - aiogram.event - INFO - Update id=75659851 is handled. Duration 266 ms by bot id=8582666055
+2025-12-23 21:42:17,289 - sqlalchemy.engine.Engine - INFO - BEGIN (implicit)
+2025-12-23 21:42:17,289 - sqlalchemy.engine.Engine - INFO - SELECT users.id, users.telegram_id, users.username, users.first_name, users.created_at 
+FROM users 
+WHERE users.telegram_id = ?
+2025-12-23 21:42:17,290 - sqlalchemy.engine.Engine - INFO - [cached since 29.32s ago] (981466212,)
+2025-12-23 21:42:17,291 - sqlalchemy.engine.Engine - INFO - ROLLBACK
+2025-12-23 21:42:17,342 - aiogram.event - INFO - Update id=75659852 is not handled. Duration 47 ms by bot id=8582666055
+2025-12-23 21:42:17,342 - aiogram.event - ERROR - Cause exception while process update id=75659852 by bot id=8582666055
+TelegramBadRequest: Telegram server says - Bad Request: can't parse entities: Unsupported start tag "gender.male:" at byte offset 159
+Traceback (most recent call last):
+  File "C:\Users\kobel\AppData\Local\Programs\Python\Python312\Lib\site-packages\aiogram\dispatcher\dispatcher.py", line 320, in _process_update
+    response = await self.feed_update(bot, update, **kwargs)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\kobel\AppData\Local\Programs\Python\Python312\Lib\site-packages\aiogram\dispatcher\dispatcher.py", line 164, in feed_update
+    response = await self.update.wrap_outer_middleware(
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\kobel\AppData\Local\Programs\Python\Python312\Lib\site-packages\aiogram\dispatcher\middlewares\error.py", line 27, in __call__
+    return await handler(event, data)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\kobel\AppData\Local\Programs\Python\Python312\Lib\site-packages\aiogram\dispatcher\middlewares\user_context.py", line 58, in __call__
+    return await handler(event, data)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\kobel\AppData\Local\Programs\Python\Python312\Lib\site-packages\aiogram\fsm\middleware.py", line 43, in __call__
+    return await handler(event, data)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\kobel\AppData\Local\Programs\Python\Python312\Lib\site-packages\aiogram\dispatcher\event\telegram.py", line 126, in trigger
+    return await wrapped_inner(event, kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\kobel\OneDrive\Рабочий стол\Питон\project-final\wardrobe_app\bot\client.py", line 643, in database_middleware
+    return await handler(event, data)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\kobel\AppData\Local\Programs\Python\Python312\Lib\site-packages\aiogram\dispatcher\event\handler.py", line 43, in call
+    return await wrapped()
+           ^^^^^^^^^^^^^^^
+  File "C:\Users\kobel\AppData\Local\Programs\Python\Python312\Lib\site-packages\aiogram\dispatcher\dispatcher.py", line 283, in _listen_update
+    return await self.propagate_event(update_type=update_type, event=event, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\kobel\AppData\Local\Programs\Python\Python312\Lib\site-packages\aiogram\dispatcher\router.py", line 161, in propagate_event
+    return await observer.wrap_outer_middleware(_wrapped, event=event, data=kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\kobel\AppData\Local\Programs\Python\Python312\Lib\site-packages\aiogram\dispatcher\router.py", line 153, in _wrapped
+    return await self._propagate_event(
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\kobel\AppData\Local\Programs\Python\Python312\Lib\site-packages\aiogram\dispatcher\router.py", line 181, in _propagate_event
+    response = await observer.trigger(event, **kwargs)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\kobel\AppData\Local\Programs\Python\Python312\Lib\site-packages\aiogram\dispatcher\event\telegram.py", line 126, in trigger
+    return await wrapped_inner(event, kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\kobel\AppData\Local\Programs\Python\Python312\Lib\site-packages\aiogram\dispatcher\event\handler.py", line 43, in call
+    return await wrapped()
+           ^^^^^^^^^^^^^^^
+  File "C:\Users\kobel\OneDrive\Рабочий стол\Питон\project-final\wardrobe_app\bot\client.py", line 600, in command_debug_handler
+    await message.answer(response[:4000])  # Ограничение Telegram
+    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\kobel\AppData\Local\Programs\Python\Python312\Lib\site-packages\aiogram\methods\base.py", line 84, in emit
+    return await bot(self)
+           ^^^^^^^^^^^^^^^
+  File "C:\Users\kobel\AppData\Local\Programs\Python\Python312\Lib\site-packages\aiogram\client\bot.py", line 485, in __call__
+    return await self.session(self, method, timeout=request_timeout)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\kobel\AppData\Local\Programs\Python\Python312\Lib\site-packages\aiogram\client\session\base.py", line 259, in __call__
+    return cast(TelegramType, await middleware(bot, method))
+                              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\kobel\AppData\Local\Programs\Python\Python312\Lib\site-packages\aiogram\client\session\aiohttp.py", line 177, in make_request
+    response = self.check_response(
+               ^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\kobel\AppData\Local\Programs\Python\Python312\Lib\site-packages\aiogram\client\session\base.py", line 121, in check_response
+    raise TelegramBadRequest(method=method, message=description)
+aiogram.exceptions.TelegramBadRequest: Telegram server says - Bad Request: can't parse entities: Unsupported start tag "gender.male:" at byte offset 159
+2025-12-23 21:44:50,009 - wardrobe_app.scheduler - INFO - Получен сигнал 2, останавливаю планировщик...
+2025-12-23 21:44:50,009 - wardrobe_app.scheduler - INFO - 🛑 Планировщик остановлен
+2025-12-23 21:44:50,009 - apscheduler.scheduler - INFO - Scheduler has been shut down
+2025-12-23 21:44:50,009 - aiogram.dispatcher - INFO - Polling stopped for bot @Garderobny_bot id=8582666055 - 'Гардеробный @garderobny'
+2025-12-23 21:44:50,010 - aiogram.dispatcher - INFO - Polling stopped
+2025-12-23 21:44:55,982 - __main__ - INFO - 🚀 Запуск гардеробного бота...
+2025-12-23 21:44:55,984 - sqlalchemy.engine.Engine - INFO - BEGIN (implicit)
+2025-12-23 21:44:55,984 - sqlalchemy.engine.Engine - INFO - PRAGMA main.table_info("users")
+2025-12-23 21:44:55,985 - sqlalchemy.engine.Engine - INFO - [raw sql] ()
+2025-12-23 21:44:55,985 - sqlalchemy.engine.Engine - INFO - PRAGMA main.table_info("user_preferences")
+2025-12-23 21:44:55,985 - sqlalchemy.engine.Engine - INFO - [raw sql] ()
+2025-12-23 21:44:55,986 - sqlalchemy.engine.Engine - INFO - PRAGMA main.table_info("weather_cache")
+2025-12-23 21:44:55,986 - sqlalchemy.engine.Engine - INFO - [raw sql] ()
+2025-12-23 21:44:55,987 - sqlalchemy.engine.Engine - INFO - PRAGMA main.table_info("system_stats")
+2025-12-23 21:44:55,987 - sqlalchemy.engine.Engine - INFO - [raw sql] ()
+2025-12-23 21:44:55,987 - sqlalchemy.engine.Engine - INFO - 
+DROP TABLE user_preferences
+2025-12-23 21:44:55,987 - sqlalchemy.engine.Engine - INFO - [no key 0.00010s] ()
+2025-12-23 21:44:55,995 - sqlalchemy.engine.Engine - INFO - 
+DROP TABLE system_stats
+2025-12-23 21:44:55,995 - sqlalchemy.engine.Engine - INFO - [no key 0.00009s] ()
+2025-12-23 21:44:56,001 - sqlalchemy.engine.Engine - INFO - 
+DROP TABLE weather_cache
+2025-12-23 21:44:56,002 - sqlalchemy.engine.Engine - INFO - [no key 0.00008s] ()
+2025-12-23 21:44:56,008 - sqlalchemy.engine.Engine - INFO - 
+DROP TABLE users
+2025-12-23 21:44:56,009 - sqlalchemy.engine.Engine - INFO - [no key 0.00018s] ()
+2025-12-23 21:44:56,019 - sqlalchemy.engine.Engine - INFO - PRAGMA main.table_info("users")
+2025-12-23 21:44:56,019 - sqlalchemy.engine.Engine - INFO - [raw sql] ()
+2025-12-23 21:44:56,019 - sqlalchemy.engine.Engine - INFO - PRAGMA temp.table_info("users")
+2025-12-23 21:44:56,019 - sqlalchemy.engine.Engine - INFO - [raw sql] ()
+2025-12-23 21:44:56,020 - sqlalchemy.engine.Engine - INFO - PRAGMA main.table_info("user_preferences")
+2025-12-23 21:44:56,020 - sqlalchemy.engine.Engine - INFO - [raw sql] ()
+2025-12-23 21:44:56,020 - sqlalchemy.engine.Engine - INFO - PRAGMA temp.table_info("user_preferences")
+2025-12-23 21:44:56,020 - sqlalchemy.engine.Engine - INFO - [raw sql] ()
+2025-12-23 21:44:56,020 - sqlalchemy.engine.Engine - INFO - PRAGMA main.table_info("weather_cache")
+2025-12-23 21:44:56,021 - sqlalchemy.engine.Engine - INFO - [raw sql] ()
+2025-12-23 21:44:56,021 - sqlalchemy.engine.Engine - INFO - PRAGMA temp.table_info("weather_cache")
+2025-12-23 21:44:56,021 - sqlalchemy.engine.Engine - INFO - [raw sql] ()
+2025-12-23 21:44:56,022 - sqlalchemy.engine.Engine - INFO - PRAGMA main.table_info("system_stats")
+2025-12-23 21:44:56,022 - sqlalchemy.engine.Engine - INFO - [raw sql] ()
+2025-12-23 21:44:56,022 - sqlalchemy.engine.Engine - INFO - PRAGMA temp.table_info("system_stats")
+2025-12-23 21:44:56,022 - sqlalchemy.engine.Engine - INFO - [raw sql] ()
+2025-12-23 21:44:56,023 - sqlalchemy.engine.Engine - INFO - 
+CREATE TABLE users (
+	id INTEGER NOT NULL, 
+	telegram_id INTEGER NOT NULL, 
+	username VARCHAR(100), 
+	first_name VARCHAR(100), 
+	created_at DATETIME, 
+	PRIMARY KEY (id)
+)
+
+
+2025-12-23 21:44:56,023 - sqlalchemy.engine.Engine - INFO - [no key 0.00007s] ()
+2025-12-23 21:44:56,034 - sqlalchemy.engine.Engine - INFO - CREATE UNIQUE INDEX ix_users_telegram_id ON users (telegram_id)
+2025-12-23 21:44:56,034 - sqlalchemy.engine.Engine - INFO - [no key 0.00009s] ()
+2025-12-23 21:44:56,041 - sqlalchemy.engine.Engine - INFO - 
+CREATE TABLE weather_cache (
+	city VARCHAR(100) NOT NULL, 
+	temperature FLOAT, 
+	feels_like FLOAT, 
+	conditions VARCHAR(100), 
+	humidity INTEGER, 
+	wind_speed FLOAT, 
+	pressure INTEGER, 
+	icon VARCHAR(10), 
+	sunrise INTEGER, 
+	sunset INTEGER, 
+	updated_at DATETIME, 
+	expires_at DATETIME, 
+	PRIMARY KEY (city)
+)
+
+
+2025-12-23 21:44:56,041 - sqlalchemy.engine.Engine - INFO - [no key 0.00008s] ()
+2025-12-23 21:44:56,048 - sqlalchemy.engine.Engine - INFO - 
+CREATE TABLE system_stats (
+	id INTEGER NOT NULL, 
+	timestamp DATETIME, 
+	cache_size INTEGER, 
+	db_cache_size INTEGER, 
+	redis_connected BOOLEAN, 
+	PRIMARY KEY (id)
+)
+
+
+2025-12-23 21:44:56,049 - sqlalchemy.engine.Engine - INFO - [no key 0.00009s] ()
+2025-12-23 21:44:56,056 - sqlalchemy.engine.Engine - INFO - 
+CREATE TABLE user_preferences (
+	id INTEGER NOT NULL, 
+	user_id INTEGER, 
+	name VARCHAR(100) NOT NULL, 
+	gender VARCHAR(6) NOT NULL, 
+	city VARCHAR(100) NOT NULL, 
+	clothing_style INTEGER NOT NULL, 
+	wants_dispatch BOOLEAN, 
+	timezone VARCHAR(10), 
+	dispatch_time VARCHAR(5), 
+	created_at DATETIME, 
+	PRIMARY KEY (id), 
+	UNIQUE (user_id), 
+	FOREIGN KEY(user_id) REFERENCES users (id)
+)
+
+
+2025-12-23 21:44:56,056 - sqlalchemy.engine.Engine - INFO - [no key 0.00012s] ()
+2025-12-23 21:44:56,063 - sqlalchemy.engine.Engine - INFO - COMMIT
+2025-12-23 21:44:56,064 - wardrobe_app.database.connection - INFO - ✅ Таблицы созданы
+2025-12-23 21:44:56,064 - __main__ - INFO - ✅ База данных готова
+2025-12-23 21:44:56,064 - __main__ - INFO - ✅ Кэш инициализирован
+2025-12-23 21:44:56,269 - wardrobe_app.scheduler - INFO - 🔄 Инициализация планировщика задач...
+2025-12-23 21:44:56,271 - apscheduler.scheduler - INFO - Adding job tentatively -- it will be properly scheduled when the scheduler starts
+2025-12-23 21:44:56,272 - apscheduler.scheduler - INFO - Adding job tentatively -- it will be properly scheduled when the scheduler starts
+2025-12-23 21:44:56,272 - apscheduler.scheduler - INFO - Adding job tentatively -- it will be properly scheduled when the scheduler starts
+2025-12-23 21:44:56,272 - apscheduler.scheduler - INFO - Adding job tentatively -- it will be properly scheduled when the scheduler starts
+2025-12-23 21:44:56,272 - apscheduler.scheduler - INFO - Adding job tentatively -- it will be properly scheduled when the scheduler starts
+2025-12-23 21:44:56,272 - wardrobe_app.scheduler - INFO - Настроено 5 задач
+2025-12-23 21:44:56,272 - wardrobe_app.scheduler - INFO - ✅ Планировщик инициализирован
+2025-12-23 21:44:56,272 - apscheduler.scheduler - INFO - Added job "Утренняя рассылка рекомендаций" to job store "default"
+2025-12-23 21:44:56,272 - apscheduler.scheduler - INFO - Added job "Обновление кэша погоды" to job store "default"
+2025-12-23 21:44:56,272 - apscheduler.scheduler - INFO - Added job "Очистка устаревшего кэша" to job store "default"
+2025-12-23 21:44:56,272 - apscheduler.scheduler - INFO - Added job "Логирование системной статистики" to job store "default"
+2025-12-23 21:44:56,272 - apscheduler.scheduler - INFO - Added job "Проверка работоспособности системы" to job store "default"
+2025-12-23 21:44:56,272 - apscheduler.scheduler - INFO - Scheduler started
+2025-12-23 21:44:56,273 - wardrobe_app.scheduler - INFO - 🚀 Планировщик задач запущен
+2025-12-23 21:44:56,273 - wardrobe_app.scheduler - INFO - Активные задачи (5):
+2025-12-23 21:44:56,273 - wardrobe_app.scheduler - INFO -   • Проверка работоспособности системы (health_check) - следующий запуск: 2025-12-23 22:14:56.272544+03:00
+2025-12-23 21:44:56,273 - wardrobe_app.scheduler - INFO -   • Утренняя рассылка рекомендаций (morning_dispatch) - следующий запуск: 2025-12-23 22:44:56.271544+03:00
+2025-12-23 21:44:56,273 - wardrobe_app.scheduler - INFO -   • Логирование системной статистики (system_stats) - следующий запуск: 2025-12-23 22:44:56.272544+03:00
+2025-12-23 21:44:56,273 - wardrobe_app.scheduler - INFO -   • Обновление кэша погоды (update_weather_cache) - следующий запуск: 2025-12-24 00:00:00+00:00
+2025-12-23 21:44:56,273 - wardrobe_app.scheduler - INFO -   • Очистка устаревшего кэша (cleanup_cache) - следующий запуск: 2025-12-24 03:44:56.272544+03:00
+2025-12-23 21:44:56,273 - __main__ - INFO - 🤖 Бот запущен. Ожидаю сообщений...
+2025-12-23 21:44:56,273 - aiogram.dispatcher - INFO - Start polling
+2025-12-23 21:44:56,440 - aiogram.dispatcher - INFO - Run polling for bot @Garderobny_bot id=8582666055 - 'Гардеробный @garderobny'
+2025-12-23 21:45:01,104 - aiogram.event - INFO - Update id=75659853 is handled. Duration 234 ms by bot id=8582666055
+2025-12-23 21:45:06,967 - aiogram.event - INFO - Update id=75659854 is handled. Duration 172 ms by bot id=8582666055
+2025-12-23 21:45:08,158 - aiogram.event - INFO - Update id=75659855 is handled. Duration 219 ms by bot id=8582666055
+2025-12-23 21:45:11,472 - aiogram.event - INFO - Update id=75659856 is handled. Duration 172 ms by bot id=8582666055
+2025-12-23 21:45:12,870 - aiogram.event - INFO - Update id=75659857 is handled. Duration 140 ms by bot id=8582666055
+2025-12-23 21:45:17,765 - aiogram.event - INFO - Update id=75659858 is handled. Duration 94 ms by bot id=8582666055
+2025-12-23 21:45:23,337 - aiogram.event - INFO - Update id=75659859 is handled. Duration 202 ms by bot id=8582666055
+2025-12-23 21:45:24,683 - sqlalchemy.engine.Engine - INFO - BEGIN (implicit)
+2025-12-23 21:45:24,688 - sqlalchemy.engine.Engine - INFO - SELECT users.id, users.telegram_id, users.username, users.first_name, users.created_at 
+FROM users 
+WHERE users.telegram_id = ?
+2025-12-23 21:45:24,689 - sqlalchemy.engine.Engine - INFO - [generated in 0.00020s] (981466212,)
+2025-12-23 21:45:24,691 - sqlalchemy.engine.Engine - INFO - INSERT INTO users (telegram_id, username, first_name, created_at) VALUES (?, ?, ?, ?)
+2025-12-23 21:45:24,691 - sqlalchemy.engine.Engine - INFO - [generated in 0.00017s] (981466212, 'yarikksss', 'Ярослав', '2025-12-23 21:45:24.690693')
+2025-12-23 21:45:24,694 - sqlalchemy.engine.Engine - INFO - SELECT user_preferences.id, user_preferences.user_id, user_preferences.name, user_preferences.gender, user_preferences.city, user_preferences.clothing_style, user_preferences.wants_dispatch, user_preferences.timezone, user_preferences.dispatch_time, user_preferences.created_at 
+FROM user_preferences 
+WHERE user_preferences.user_id = ?
+2025-12-23 21:45:24,694 - sqlalchemy.engine.Engine - INFO - [generated in 0.00020s] (1,)
+2025-12-23 21:45:24,696 - sqlalchemy.engine.Engine - INFO - INSERT INTO user_preferences (user_id, name, gender, city, clothing_style, wants_dispatch, timezone, dispatch_time, created_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
+2025-12-23 21:45:24,696 - sqlalchemy.engine.Engine - INFO - [generated in 0.00016s] (1, 'Ярослав', 'MALE', 'Москва', 1, 1, 'UTC+3', '08:00', '2025-12-23 21:45:24.695694')
+2025-12-23 21:45:24,697 - sqlalchemy.engine.Engine - INFO - COMMIT
+2025-12-23 21:45:24,845 - aiogram.event - INFO - Update id=75659860 is handled. Duration 233 ms by bot id=8582666055
+2025-12-23 21:48:12,308 - wardrobe_app.scheduler - INFO - Получен сигнал 2, останавливаю планировщик...
+2025-12-23 21:48:12,308 - wardrobe_app.scheduler - INFO - 🛑 Планировщик остановлен
+2025-12-23 21:48:12,308 - apscheduler.scheduler - INFO - Scheduler has been shut down
+2025-12-23 21:48:12,309 - aiogram.dispatcher - INFO - Polling stopped for bot @Garderobny_bot id=8582666055 - 'Гардеробный @garderobny'
+2025-12-23 21:48:12,309 - aiogram.dispatcher - INFO - Polling stopped
+2025-12-23 21:48:16,864 - __main__ - INFO - 🚀 Запуск гардеробного бота...
+2025-12-23 21:48:16,868 - sqlalchemy.engine.Engine - INFO - BEGIN (implicit)
+2025-12-23 21:48:16,868 - sqlalchemy.engine.Engine - INFO - PRAGMA main.table_info("users")
+2025-12-23 21:48:16,868 - sqlalchemy.engine.Engine - INFO - [raw sql] ()
+2025-12-23 21:48:16,869 - sqlalchemy.engine.Engine - INFO - PRAGMA main.table_info("user_preferences")
+2025-12-23 21:48:16,869 - sqlalchemy.engine.Engine - INFO - [raw sql] ()
+2025-12-23 21:48:16,870 - sqlalchemy.engine.Engine - INFO - PRAGMA main.table_info("weather_cache")
+2025-12-23 21:48:16,870 - sqlalchemy.engine.Engine - INFO - [raw sql] ()
+2025-12-23 21:48:16,871 - sqlalchemy.engine.Engine - INFO - PRAGMA main.table_info("system_stats")
+2025-12-23 21:48:16,871 - sqlalchemy.engine.Engine - INFO - [raw sql] ()
+2025-12-23 21:48:16,871 - sqlalchemy.engine.Engine - INFO - 
+DROP TABLE user_preferences
+2025-12-23 21:48:16,872 - sqlalchemy.engine.Engine - INFO - [no key 0.00015s] ()
+2025-12-23 21:48:16,881 - sqlalchemy.engine.Engine - INFO - 
+DROP TABLE system_stats
+2025-12-23 21:48:16,881 - sqlalchemy.engine.Engine - INFO - [no key 0.00010s] ()
+2025-12-23 21:48:16,888 - sqlalchemy.engine.Engine - INFO - 
+DROP TABLE weather_cache
+2025-12-23 21:48:16,889 - sqlalchemy.engine.Engine - INFO - [no key 0.00011s] ()
+2025-12-23 21:48:16,895 - sqlalchemy.engine.Engine - INFO - 
+DROP TABLE users
+2025-12-23 21:48:16,896 - sqlalchemy.engine.Engine - INFO - [no key 0.00014s] ()
+2025-12-23 21:48:16,905 - sqlalchemy.engine.Engine - INFO - PRAGMA main.table_info("users")
+2025-12-23 21:48:16,905 - sqlalchemy.engine.Engine - INFO - [raw sql] ()
+2025-12-23 21:48:16,906 - sqlalchemy.engine.Engine - INFO - PRAGMA temp.table_info("users")
+2025-12-23 21:48:16,906 - sqlalchemy.engine.Engine - INFO - [raw sql] ()
+2025-12-23 21:48:16,906 - sqlalchemy.engine.Engine - INFO - PRAGMA main.table_info("user_preferences")
+2025-12-23 21:48:16,907 - sqlalchemy.engine.Engine - INFO - [raw sql] ()
+2025-12-23 21:48:16,907 - sqlalchemy.engine.Engine - INFO - PRAGMA temp.table_info("user_preferences")
+2025-12-23 21:48:16,907 - sqlalchemy.engine.Engine - INFO - [raw sql] ()
+2025-12-23 21:48:16,908 - sqlalchemy.engine.Engine - INFO - PRAGMA main.table_info("weather_cache")
+2025-12-23 21:48:16,908 - sqlalchemy.engine.Engine - INFO - [raw sql] ()
+2025-12-23 21:48:16,909 - sqlalchemy.engine.Engine - INFO - PRAGMA temp.table_info("weather_cache")
+2025-12-23 21:48:16,909 - sqlalchemy.engine.Engine - INFO - [raw sql] ()
+2025-12-23 21:48:16,909 - sqlalchemy.engine.Engine - INFO - PRAGMA main.table_info("system_stats")
+2025-12-23 21:48:16,909 - sqlalchemy.engine.Engine - INFO - [raw sql] ()
+2025-12-23 21:48:16,910 - sqlalchemy.engine.Engine - INFO - PRAGMA temp.table_info("system_stats")
+2025-12-23 21:48:16,910 - sqlalchemy.engine.Engine - INFO - [raw sql] ()
+2025-12-23 21:48:16,910 - sqlalchemy.engine.Engine - INFO - 
+CREATE TABLE users (
+	id INTEGER NOT NULL, 
+	telegram_id INTEGER NOT NULL, 
+	username VARCHAR(100), 
+	first_name VARCHAR(100), 
+	created_at DATETIME, 
+	PRIMARY KEY (id)
+)
+
+
+2025-12-23 21:48:16,911 - sqlalchemy.engine.Engine - INFO - [no key 0.00011s] ()
+2025-12-23 21:48:16,918 - sqlalchemy.engine.Engine - INFO - CREATE UNIQUE INDEX ix_users_telegram_id ON users (telegram_id)
+2025-12-23 21:48:16,918 - sqlalchemy.engine.Engine - INFO - [no key 0.00009s] ()
+2025-12-23 21:48:16,925 - sqlalchemy.engine.Engine - INFO - 
+CREATE TABLE weather_cache (
+	city VARCHAR(100) NOT NULL, 
+	temperature FLOAT, 
+	feels_like FLOAT, 
+	conditions VARCHAR(100), 
+	humidity INTEGER, 
+	wind_speed FLOAT, 
+	pressure INTEGER, 
+	icon VARCHAR(10), 
+	sunrise INTEGER, 
+	sunset INTEGER, 
+	updated_at DATETIME, 
+	expires_at DATETIME, 
+	PRIMARY KEY (city)
+)
+
+
+2025-12-23 21:48:16,925 - sqlalchemy.engine.Engine - INFO - [no key 0.00009s] ()
+2025-12-23 21:48:16,932 - sqlalchemy.engine.Engine - INFO - 
+CREATE TABLE system_stats (
+	id INTEGER NOT NULL, 
+	timestamp DATETIME, 
+	cache_size INTEGER, 
+	db_cache_size INTEGER, 
+	redis_connected BOOLEAN, 
+	PRIMARY KEY (id)
+)
+
+
+2025-12-23 21:48:16,932 - sqlalchemy.engine.Engine - INFO - [no key 0.00009s] ()
+2025-12-23 21:48:16,939 - sqlalchemy.engine.Engine - INFO - 
+CREATE TABLE user_preferences (
+	id INTEGER NOT NULL, 
+	user_id INTEGER, 
+	name VARCHAR(100) NOT NULL, 
+	gender VARCHAR(6) NOT NULL, 
+	city VARCHAR(100) NOT NULL, 
+	clothing_style INTEGER NOT NULL, 
+	wants_dispatch BOOLEAN, 
+	timezone VARCHAR(10), 
+	dispatch_time VARCHAR(5), 
+	created_at DATETIME, 
+	PRIMARY KEY (id), 
+	UNIQUE (user_id), 
+	FOREIGN KEY(user_id) REFERENCES users (id)
+)
+
+
+2025-12-23 21:48:16,939 - sqlalchemy.engine.Engine - INFO - [no key 0.00010s] ()
+2025-12-23 21:48:16,946 - sqlalchemy.engine.Engine - INFO - COMMIT
+2025-12-23 21:48:16,946 - wardrobe_app.database.connection - INFO - ✅ Таблицы созданы
+2025-12-23 21:48:16,946 - __main__ - INFO - ✅ База данных готова
+2025-12-23 21:48:16,946 - __main__ - INFO - ✅ Кэш инициализирован
+2025-12-23 21:48:17,142 - wardrobe_app.scheduler - INFO - 🔄 Инициализация планировщика задач...
+2025-12-23 21:48:17,145 - apscheduler.scheduler - INFO - Adding job tentatively -- it will be properly scheduled when the scheduler starts
+2025-12-23 21:48:17,145 - apscheduler.scheduler - INFO - Adding job tentatively -- it will be properly scheduled when the scheduler starts
+2025-12-23 21:48:17,145 - apscheduler.scheduler - INFO - Adding job tentatively -- it will be properly scheduled when the scheduler starts
+2025-12-23 21:48:17,145 - apscheduler.scheduler - INFO - Adding job tentatively -- it will be properly scheduled when the scheduler starts
+2025-12-23 21:48:17,145 - apscheduler.scheduler - INFO - Adding job tentatively -- it will be properly scheduled when the scheduler starts
+2025-12-23 21:48:17,145 - wardrobe_app.scheduler - INFO - Настроено 5 задач
+2025-12-23 21:48:17,145 - wardrobe_app.scheduler - INFO - ✅ Планировщик инициализирован
+2025-12-23 21:48:17,145 - apscheduler.scheduler - INFO - Added job "Утренняя рассылка рекомендаций" to job store "default"
+2025-12-23 21:48:17,145 - apscheduler.scheduler - INFO - Added job "Обновление кэша погоды" to job store "default"
+2025-12-23 21:48:17,146 - apscheduler.scheduler - INFO - Added job "Очистка устаревшего кэша" to job store "default"
+2025-12-23 21:48:17,146 - apscheduler.scheduler - INFO - Added job "Логирование системной статистики" to job store "default"
+2025-12-23 21:48:17,146 - apscheduler.scheduler - INFO - Added job "Проверка работоспособности системы" to job store "default"
+2025-12-23 21:48:17,146 - apscheduler.scheduler - INFO - Scheduler started
+2025-12-23 21:48:17,146 - wardrobe_app.scheduler - INFO - 🚀 Планировщик задач запущен
+2025-12-23 21:48:17,146 - wardrobe_app.scheduler - INFO - Активные задачи (5):
+2025-12-23 21:48:17,146 - wardrobe_app.scheduler - INFO -   • Проверка работоспособности системы (health_check) - следующий запуск: 2025-12-23 22:18:17.145847+03:00
+2025-12-23 21:48:17,146 - wardrobe_app.scheduler - INFO -   • Утренняя рассылка рекомендаций (morning_dispatch) - следующий запуск: 2025-12-23 22:48:17.145847+03:00
+2025-12-23 21:48:17,146 - wardrobe_app.scheduler - INFO -   • Логирование системной статистики (system_stats) - следующий запуск: 2025-12-23 22:48:17.145847+03:00
+2025-12-23 21:48:17,146 - wardrobe_app.scheduler - INFO -   • Обновление кэша погоды (update_weather_cache) - следующий запуск: 2025-12-24 00:00:00+00:00
+2025-12-23 21:48:17,146 - wardrobe_app.scheduler - INFO -   • Очистка устаревшего кэша (cleanup_cache) - следующий запуск: 2025-12-24 03:48:17.145847+03:00
+2025-12-23 21:48:17,146 - __main__ - INFO - 🤖 Бот запущен. Ожидаю сообщений...
+2025-12-23 21:48:17,146 - aiogram.dispatcher - INFO - Start polling
+2025-12-23 21:48:17,324 - aiogram.dispatcher - INFO - Run polling for bot @Garderobny_bot id=8582666055 - 'Гардеробный @garderobny'
+2025-12-23 21:48:31,169 - aiogram.event - INFO - Update id=75659861 is handled. Duration 250 ms by bot id=8582666055
+2025-12-23 21:48:35,813 - aiogram.event - INFO - Update id=75659862 is handled. Duration 172 ms by bot id=8582666055
+2025-12-23 21:48:37,749 - aiogram.event - INFO - Update id=75659863 is handled. Duration 234 ms by bot id=8582666055
+2025-12-23 21:48:40,923 - aiogram.event - INFO - Update id=75659864 is handled. Duration 155 ms by bot id=8582666055
+2025-12-23 21:48:42,832 - aiogram.event - INFO - Update id=75659865 is handled. Duration 140 ms by bot id=8582666055
+2025-12-23 21:48:47,411 - aiogram.event - INFO - Update id=75659866 is handled. Duration 93 ms by bot id=8582666055
+2025-12-23 21:48:51,690 - aiogram.event - INFO - Update id=75659867 is handled. Duration 155 ms by bot id=8582666055
+2025-12-23 21:48:53,233 - sqlalchemy.engine.Engine - INFO - BEGIN (implicit)
+2025-12-23 21:48:53,238 - sqlalchemy.engine.Engine - INFO - SELECT users.id, users.telegram_id, users.username, users.first_name, users.created_at 
+FROM users 
+WHERE users.telegram_id = ?
+2025-12-23 21:48:53,238 - sqlalchemy.engine.Engine - INFO - [generated in 0.00018s] (981466212,)
+2025-12-23 21:48:53,240 - sqlalchemy.engine.Engine - INFO - INSERT INTO users (telegram_id, username, first_name, created_at) VALUES (?, ?, ?, ?)
+2025-12-23 21:48:53,240 - sqlalchemy.engine.Engine - INFO - [generated in 0.00016s] (981466212, 'yarikksss', 'Ярослав', '2025-12-23 21:48:53.239516')
+2025-12-23 21:48:53,243 - sqlalchemy.engine.Engine - INFO - SELECT user_preferences.id, user_preferences.user_id, user_preferences.name, user_preferences.gender, user_preferences.city, user_preferences.clothing_style, user_preferences.wants_dispatch, user_preferences.timezone, user_preferences.dispatch_time, user_preferences.created_at 
+FROM user_preferences 
+WHERE user_preferences.user_id = ?
+2025-12-23 21:48:53,243 - sqlalchemy.engine.Engine - INFO - [generated in 0.00015s] (1,)
+2025-12-23 21:48:53,245 - sqlalchemy.engine.Engine - INFO - INSERT INTO user_preferences (user_id, name, gender, city, clothing_style, wants_dispatch, timezone, dispatch_time, created_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
+2025-12-23 21:48:53,245 - sqlalchemy.engine.Engine - INFO - [generated in 0.00016s] (1, 'Ярослав', 'MALE', 'Москва', 1, 1, 'UTC+3', '08:00', '2025-12-23 21:48:53.244516')
+2025-12-23 21:48:53,246 - sqlalchemy.engine.Engine - INFO - COMMIT
+2025-12-23 21:48:53,459 - aiogram.event - INFO - Update id=75659868 is handled. Duration 311 ms by bot id=8582666055
+2025-12-23 21:51:19,786 - wardrobe_app.scheduler - INFO - Получен сигнал 2, останавливаю планировщик...
+2025-12-23 21:51:19,786 - wardrobe_app.scheduler - INFO - 🛑 Планировщик остановлен
+2025-12-23 21:51:19,786 - apscheduler.scheduler - INFO - Scheduler has been shut down
+2025-12-23 21:51:19,786 - aiogram.dispatcher - INFO - Polling stopped for bot @Garderobny_bot id=8582666055 - 'Гардеробный @garderobny'
+2025-12-23 21:51:19,786 - aiogram.dispatcher - INFO - Polling stopped
