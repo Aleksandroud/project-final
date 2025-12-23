@@ -67,8 +67,8 @@ async def process_name(message: Message, state: FSMContext) -> None:
         "2. Укажите ваш пол для более точных рекомендаций:",
         reply_markup=InlineKeyboardMarkup(
             inline_keyboard=[
-                [InlineKeyboardButton(text="👨 Мужской", callback_data="gender_male")],
-                [InlineKeyboardButton(text="👩 Женский", callback_data="gender_female")]
+                [InlineKeyboardButton(text="Мужской", callback_data="gender_male")],
+                [InlineKeyboardButton(text="Женский", callback_data="gender_female")]
             ]
         )
     )
@@ -132,8 +132,8 @@ async def process_city(message: Message, state: FSMContext) -> None:
         reply_markup=InlineKeyboardMarkup(
             inline_keyboard=[
                 [
-                    InlineKeyboardButton(text="✅ Да, хочу", callback_data="enable_dispatch_yes"),
-                    InlineKeyboardButton(text="❌ Нет, не нужно", callback_data="enable_dispatch_no")
+                    InlineKeyboardButton(text="Да, хочу", callback_data="enable_dispatch_yes"),
+                    InlineKeyboardButton(text="Нет, не нужно", callback_data="enable_dispatch_no")
                 ]
             ]
         )
@@ -362,9 +362,9 @@ async def command_change_handler(message: Message, state: FSMContext):
         "Что вы хотите изменить?",
         reply_markup=InlineKeyboardMarkup(
             inline_keyboard=[
-                [InlineKeyboardButton(text="🏙️ Город", callback_data="change_city")],
-                [InlineKeyboardButton(text="👕 Стиль одежды", callback_data="change_style")],
-                [InlineKeyboardButton(text="⏰ Настройки рассылки", callback_data="change_dispatch")],
+                [InlineKeyboardButton(text="Город", callback_data="change_city")],
+                [InlineKeyboardButton(text="Стиль одежды", callback_data="change_style")],
+                [InlineKeyboardButton(text="Настройки рассылки", callback_data="change_dispatch")],
             ]
         )
     )
@@ -481,8 +481,8 @@ async def change_dispatch_handler(callback: CallbackQuery, state: FSMContext):
         reply_markup=InlineKeyboardMarkup(
             inline_keyboard=[
                 [
-                    InlineKeyboardButton(text="✅ Да", callback_data="enable_dispatch_yes"),
-                    InlineKeyboardButton(text="❌ Нет", callback_data="enable_dispatch_no")
+                    InlineKeyboardButton(text="Да", callback_data="enable_dispatch_yes"),
+                    InlineKeyboardButton(text="Нет", callback_data="enable_dispatch_no")
                 ]
             ]
         )
