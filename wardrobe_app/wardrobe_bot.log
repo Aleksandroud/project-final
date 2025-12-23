@@ -4362,3 +4362,116 @@ WHERE user_preferences.user_id = ?
 2025-12-23 21:51:19,786 - apscheduler.scheduler - INFO - Scheduler has been shut down
 2025-12-23 21:51:19,786 - aiogram.dispatcher - INFO - Polling stopped for bot @Garderobny_bot id=8582666055 - 'Гардеробный @garderobny'
 2025-12-23 21:51:19,786 - aiogram.dispatcher - INFO - Polling stopped
+2025-12-23 21:51:27,252 - __main__ - INFO - 🚀 Запуск гардеробного бота...
+2025-12-23 21:51:27,254 - sqlalchemy.engine.Engine - INFO - BEGIN (implicit)
+2025-12-23 21:51:27,254 - sqlalchemy.engine.Engine - INFO - PRAGMA main.table_info("users")
+2025-12-23 21:51:27,255 - sqlalchemy.engine.Engine - INFO - [raw sql] ()
+2025-12-23 21:51:27,255 - sqlalchemy.engine.Engine - INFO - PRAGMA main.table_info("user_preferences")
+2025-12-23 21:51:27,255 - sqlalchemy.engine.Engine - INFO - [raw sql] ()
+2025-12-23 21:51:27,256 - sqlalchemy.engine.Engine - INFO - PRAGMA main.table_info("weather_cache")
+2025-12-23 21:51:27,256 - sqlalchemy.engine.Engine - INFO - [raw sql] ()
+2025-12-23 21:51:27,256 - sqlalchemy.engine.Engine - INFO - PRAGMA main.table_info("system_stats")
+2025-12-23 21:51:27,256 - sqlalchemy.engine.Engine - INFO - [raw sql] ()
+2025-12-23 21:51:27,257 - sqlalchemy.engine.Engine - INFO - COMMIT
+2025-12-23 21:51:27,258 - wardrobe_app.database.connection - INFO - ✅ Таблицы готовы (созданы если не существовали)
+2025-12-23 21:51:27,258 - __main__ - INFO - ✅ База данных готова
+2025-12-23 21:51:27,258 - __main__ - INFO - ✅ Кэш инициализирован
+2025-12-23 21:51:27,450 - wardrobe_app.scheduler - INFO - 🔄 Инициализация планировщика задач...
+2025-12-23 21:51:27,452 - apscheduler.scheduler - INFO - Adding job tentatively -- it will be properly scheduled when the scheduler starts
+2025-12-23 21:51:27,452 - apscheduler.scheduler - INFO - Adding job tentatively -- it will be properly scheduled when the scheduler starts
+2025-12-23 21:51:27,452 - apscheduler.scheduler - INFO - Adding job tentatively -- it will be properly scheduled when the scheduler starts
+2025-12-23 21:51:27,452 - apscheduler.scheduler - INFO - Adding job tentatively -- it will be properly scheduled when the scheduler starts
+2025-12-23 21:51:27,453 - apscheduler.scheduler - INFO - Adding job tentatively -- it will be properly scheduled when the scheduler starts
+2025-12-23 21:51:27,453 - wardrobe_app.scheduler - INFO - Настроено 5 задач
+2025-12-23 21:51:27,453 - wardrobe_app.scheduler - INFO - ✅ Планировщик инициализирован
+2025-12-23 21:51:27,453 - apscheduler.scheduler - INFO - Added job "Утренняя рассылка рекомендаций" to job store "default"
+2025-12-23 21:51:27,453 - apscheduler.scheduler - INFO - Added job "Обновление кэша погоды" to job store "default"
+2025-12-23 21:51:27,453 - apscheduler.scheduler - INFO - Added job "Очистка устаревшего кэша" to job store "default"
+2025-12-23 21:51:27,453 - apscheduler.scheduler - INFO - Added job "Логирование системной статистики" to job store "default"
+2025-12-23 21:51:27,453 - apscheduler.scheduler - INFO - Added job "Проверка работоспособности системы" to job store "default"
+2025-12-23 21:51:27,453 - apscheduler.scheduler - INFO - Scheduler started
+2025-12-23 21:51:27,453 - wardrobe_app.scheduler - INFO - 🚀 Планировщик задач запущен
+2025-12-23 21:51:27,453 - wardrobe_app.scheduler - INFO - Активные задачи (5):
+2025-12-23 21:51:27,453 - wardrobe_app.scheduler - INFO -   • Проверка работоспособности системы (health_check) - следующий запуск: 2025-12-23 22:21:27.452395+03:00
+2025-12-23 21:51:27,453 - wardrobe_app.scheduler - INFO -   • Утренняя рассылка рекомендаций (morning_dispatch) - следующий запуск: 2025-12-23 22:51:27.452395+03:00
+2025-12-23 21:51:27,453 - wardrobe_app.scheduler - INFO -   • Логирование системной статистики (system_stats) - следующий запуск: 2025-12-23 22:51:27.452395+03:00
+2025-12-23 21:51:27,453 - wardrobe_app.scheduler - INFO -   • Обновление кэша погоды (update_weather_cache) - следующий запуск: 2025-12-24 00:00:00+00:00
+2025-12-23 21:51:27,453 - wardrobe_app.scheduler - INFO -   • Очистка устаревшего кэша (cleanup_cache) - следующий запуск: 2025-12-24 03:51:27.452395+03:00
+2025-12-23 21:51:27,453 - __main__ - INFO - 🤖 Бот запущен. Ожидаю сообщений...
+2025-12-23 21:51:27,454 - aiogram.dispatcher - INFO - Start polling
+2025-12-23 21:51:27,615 - aiogram.dispatcher - INFO - Run polling for bot @Garderobny_bot id=8582666055 - 'Гардеробный @garderobny'
+2025-12-23 21:51:32,696 - aiogram.event - INFO - Update id=75659869 is handled. Duration 265 ms by bot id=8582666055
+2025-12-23 21:51:37,067 - aiogram.event - INFO - Update id=75659870 is handled. Duration 109 ms by bot id=8582666055
+2025-12-23 21:51:39,016 - aiogram.event - INFO - Update id=75659871 is handled. Duration 577 ms by bot id=8582666055
+2025-12-23 21:51:42,679 - aiogram.event - INFO - Update id=75659872 is handled. Duration 219 ms by bot id=8582666055
+2025-12-23 21:51:45,327 - aiogram.event - INFO - Update id=75659873 is handled. Duration 187 ms by bot id=8582666055
+2025-12-23 21:51:51,527 - aiogram.event - INFO - Update id=75659874 is handled. Duration 78 ms by bot id=8582666055
+2025-12-23 21:52:00,433 - aiogram.event - INFO - Update id=75659875 is handled. Duration 202 ms by bot id=8582666055
+2025-12-23 21:52:01,544 - sqlalchemy.engine.Engine - INFO - BEGIN (implicit)
+2025-12-23 21:52:01,550 - sqlalchemy.engine.Engine - INFO - SELECT users.id, users.telegram_id, users.username, users.first_name, users.created_at 
+FROM users 
+WHERE users.telegram_id = ?
+2025-12-23 21:52:01,550 - sqlalchemy.engine.Engine - INFO - [generated in 0.00022s] (981466212,)
+2025-12-23 21:52:01,552 - sqlalchemy.engine.Engine - INFO - SELECT user_preferences.id, user_preferences.user_id, user_preferences.name, user_preferences.gender, user_preferences.city, user_preferences.clothing_style, user_preferences.wants_dispatch, user_preferences.timezone, user_preferences.dispatch_time, user_preferences.created_at 
+FROM user_preferences 
+WHERE user_preferences.user_id = ?
+2025-12-23 21:52:01,552 - sqlalchemy.engine.Engine - INFO - [generated in 0.00015s] (1,)
+2025-12-23 21:52:01,554 - sqlalchemy.engine.Engine - INFO - DELETE FROM user_preferences WHERE user_preferences.id = ?
+2025-12-23 21:52:01,554 - sqlalchemy.engine.Engine - INFO - [generated in 0.00015s] (1,)
+2025-12-23 21:52:01,558 - sqlalchemy.engine.Engine - INFO - INSERT INTO user_preferences (user_id, name, gender, city, clothing_style, wants_dispatch, timezone, dispatch_time, created_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
+2025-12-23 21:52:01,558 - sqlalchemy.engine.Engine - INFO - [generated in 0.00016s] (1, 'Ярослав', 'MALE', 'Москва', 1, 1, 'UTC+3', '08:00', '2025-12-23 21:52:01.557638')
+2025-12-23 21:52:01,558 - sqlalchemy.engine.Engine - INFO - COMMIT
+2025-12-23 21:52:01,760 - aiogram.event - INFO - Update id=75659876 is handled. Duration 297 ms by bot id=8582666055
+2025-12-23 22:21:27,456 - apscheduler.executors.default - INFO - Running job "Проверка работоспособности системы (trigger: interval[0:30:00], next run at: 2025-12-23 22:21:27 MSK)" (scheduled at 2025-12-23 22:21:27.452395+03:00)
+2025-12-23 22:21:27,457 - apscheduler.executors.default - INFO - Job "Проверка работоспособности системы (trigger: interval[0:30:00], next run at: 2025-12-23 22:51:27 MSK)" executed successfully
+2025-12-23 22:21:45,617 - aiogram.dispatcher - ERROR - Failed to fetch updates - TelegramConflictError: Telegram server says - Conflict: terminated by other getUpdates request; make sure that only one bot instance is running
+2025-12-23 22:21:45,617 - aiogram.dispatcher - WARNING - Sleep for 1.000000 seconds and try again... (tryings = 0, bot id = 8582666055)
+2025-12-23 22:21:50,747 - aiogram.dispatcher - ERROR - Failed to fetch updates - TelegramConflictError: Telegram server says - Conflict: terminated by other getUpdates request; make sure that only one bot instance is running
+2025-12-23 22:21:50,747 - aiogram.dispatcher - WARNING - Sleep for 1.313167 seconds and try again... (tryings = 1, bot id = 8582666055)
+2025-12-23 22:21:56,377 - aiogram.dispatcher - ERROR - Failed to fetch updates - TelegramConflictError: Telegram server says - Conflict: terminated by other getUpdates request; make sure that only one bot instance is running
+2025-12-23 22:21:56,377 - aiogram.dispatcher - WARNING - Sleep for 1.741097 seconds and try again... (tryings = 2, bot id = 8582666055)
+2025-12-23 22:22:02,744 - aiogram.dispatcher - ERROR - Failed to fetch updates - TelegramConflictError: Telegram server says - Conflict: terminated by other getUpdates request; make sure that only one bot instance is running
+2025-12-23 22:22:02,744 - aiogram.dispatcher - WARNING - Sleep for 2.116194 seconds and try again... (tryings = 3, bot id = 8582666055)
+2025-12-23 22:22:09,957 - aiogram.dispatcher - ERROR - Failed to fetch updates - TelegramConflictError: Telegram server says - Conflict: terminated by other getUpdates request; make sure that only one bot instance is running
+2025-12-23 22:22:09,957 - aiogram.dispatcher - WARNING - Sleep for 2.709996 seconds and try again... (tryings = 4, bot id = 8582666055)
+2025-12-23 22:22:18,298 - aiogram.dispatcher - ERROR - Failed to fetch updates - TelegramConflictError: Telegram server says - Conflict: terminated by other getUpdates request; make sure that only one bot instance is running
+2025-12-23 22:22:18,299 - aiogram.dispatcher - WARNING - Sleep for 3.473971 seconds and try again... (tryings = 5, bot id = 8582666055)
+2025-12-23 22:22:25,025 - aiogram.dispatcher - ERROR - Failed to fetch updates - TelegramConflictError: Telegram server says - Conflict: terminated by other getUpdates request; make sure that only one bot instance is running
+2025-12-23 22:22:25,025 - aiogram.dispatcher - WARNING - Sleep for 4.584152 seconds and try again... (tryings = 6, bot id = 8582666055)
+2025-12-23 22:22:33,793 - aiogram.dispatcher - ERROR - Failed to fetch updates - TelegramConflictError: Telegram server says - Conflict: terminated by other getUpdates request; make sure that only one bot instance is running
+2025-12-23 22:22:33,793 - aiogram.dispatcher - WARNING - Sleep for 4.840270 seconds and try again... (tryings = 7, bot id = 8582666055)
+2025-12-23 22:22:43,896 - aiogram.dispatcher - ERROR - Failed to fetch updates - TelegramConflictError: Telegram server says - Conflict: terminated by other getUpdates request; make sure that only one bot instance is running
+2025-12-23 22:22:43,896 - aiogram.dispatcher - WARNING - Sleep for 5.138254 seconds and try again... (tryings = 8, bot id = 8582666055)
+2025-12-23 22:22:54,298 - aiogram.dispatcher - ERROR - Failed to fetch updates - TelegramConflictError: Telegram server says - Conflict: terminated by other getUpdates request; make sure that only one bot instance is running
+2025-12-23 22:22:54,298 - aiogram.dispatcher - WARNING - Sleep for 5.111433 seconds and try again... (tryings = 9, bot id = 8582666055)
+2025-12-23 22:23:04,426 - aiogram.dispatcher - ERROR - Failed to fetch updates - TelegramConflictError: Telegram server says - Conflict: terminated by other getUpdates request; make sure that only one bot instance is running
+2025-12-23 22:23:04,426 - aiogram.dispatcher - WARNING - Sleep for 5.095953 seconds and try again... (tryings = 10, bot id = 8582666055)
+2025-12-23 22:23:14,639 - aiogram.dispatcher - ERROR - Failed to fetch updates - TelegramConflictError: Telegram server says - Conflict: terminated by other getUpdates request; make sure that only one bot instance is running
+2025-12-23 22:23:14,639 - aiogram.dispatcher - WARNING - Sleep for 5.068104 seconds and try again... (tryings = 11, bot id = 8582666055)
+2025-12-23 22:23:24,841 - aiogram.dispatcher - ERROR - Failed to fetch updates - TelegramConflictError: Telegram server says - Conflict: terminated by other getUpdates request; make sure that only one bot instance is running
+2025-12-23 22:23:24,841 - aiogram.dispatcher - WARNING - Sleep for 4.988934 seconds and try again... (tryings = 12, bot id = 8582666055)
+2025-12-23 22:23:35,062 - aiogram.dispatcher - ERROR - Failed to fetch updates - TelegramConflictError: Telegram server says - Conflict: terminated by other getUpdates request; make sure that only one bot instance is running
+2025-12-23 22:23:35,062 - aiogram.dispatcher - WARNING - Sleep for 4.968741 seconds and try again... (tryings = 13, bot id = 8582666055)
+2025-12-23 22:23:45,197 - aiogram.dispatcher - ERROR - Failed to fetch updates - TelegramConflictError: Telegram server says - Conflict: terminated by other getUpdates request; make sure that only one bot instance is running
+2025-12-23 22:23:45,197 - aiogram.dispatcher - WARNING - Sleep for 4.984624 seconds and try again... (tryings = 14, bot id = 8582666055)
+2025-12-23 22:23:55,381 - aiogram.dispatcher - ERROR - Failed to fetch updates - TelegramConflictError: Telegram server says - Conflict: terminated by other getUpdates request; make sure that only one bot instance is running
+2025-12-23 22:23:55,381 - aiogram.dispatcher - WARNING - Sleep for 4.886247 seconds and try again... (tryings = 15, bot id = 8582666055)
+2025-12-23 22:24:05,244 - aiogram.dispatcher - ERROR - Failed to fetch updates - TelegramConflictError: Telegram server says - Conflict: terminated by other getUpdates request; make sure that only one bot instance is running
+2025-12-23 22:24:05,244 - aiogram.dispatcher - WARNING - Sleep for 4.833906 seconds and try again... (tryings = 16, bot id = 8582666055)
+2025-12-23 22:24:15,003 - aiogram.dispatcher - ERROR - Failed to fetch updates - TelegramConflictError: Telegram server says - Conflict: terminated by other getUpdates request; make sure that only one bot instance is running
+2025-12-23 22:24:15,003 - aiogram.dispatcher - WARNING - Sleep for 5.089560 seconds and try again... (tryings = 17, bot id = 8582666055)
+2025-12-23 22:24:25,338 - aiogram.dispatcher - ERROR - Failed to fetch updates - TelegramConflictError: Telegram server says - Conflict: terminated by other getUpdates request; make sure that only one bot instance is running
+2025-12-23 22:24:25,338 - aiogram.dispatcher - WARNING - Sleep for 4.855782 seconds and try again... (tryings = 18, bot id = 8582666055)
+2025-12-23 22:24:35,340 - aiogram.dispatcher - ERROR - Failed to fetch updates - TelegramConflictError: Telegram server says - Conflict: terminated by other getUpdates request; make sure that only one bot instance is running
+2025-12-23 22:24:35,340 - aiogram.dispatcher - WARNING - Sleep for 5.037836 seconds and try again... (tryings = 19, bot id = 8582666055)
+2025-12-23 22:24:45,629 - aiogram.dispatcher - ERROR - Failed to fetch updates - TelegramConflictError: Telegram server says - Conflict: terminated by other getUpdates request; make sure that only one bot instance is running
+2025-12-23 22:24:45,629 - aiogram.dispatcher - WARNING - Sleep for 4.946062 seconds and try again... (tryings = 20, bot id = 8582666055)
+2025-12-23 22:24:55,524 - aiogram.dispatcher - ERROR - Failed to fetch updates - TelegramConflictError: Telegram server says - Conflict: terminated by other getUpdates request; make sure that only one bot instance is running
+2025-12-23 22:24:55,524 - aiogram.dispatcher - WARNING - Sleep for 4.974579 seconds and try again... (tryings = 21, bot id = 8582666055)
+2025-12-23 22:25:10,557 - aiogram.dispatcher - INFO - Connection established (tryings = 22, bot id = 8582666055)
+2025-12-23 22:51:29,433 - apscheduler.executors.default - INFO - Running job "Проверка работоспособности системы (trigger: interval[0:30:00], next run at: 2025-12-23 23:21:27 MSK)" (scheduled at 2025-12-23 22:51:27.452395+03:00)
+2025-12-23 22:51:29,434 - apscheduler.executors.default - INFO - Job "Проверка работоспособности системы (trigger: interval[0:30:00], next run at: 2025-12-23 23:21:27 MSK)" executed successfully
+2025-12-23 22:51:29,433 - apscheduler.executors.default - INFO - Running job "Утренняя рассылка рекомендаций (trigger: interval[1:00:00], next run at: 2025-12-23 22:51:27 MSK)" (scheduled at 2025-12-23 22:51:27.452395+03:00)
+2025-12-23 22:51:29,435 - apscheduler.executors.default - INFO - Job "Утренняя рассылка рекомендаций (trigger: interval[1:00:00], next run at: 2025-12-23 22:51:27 MSK)" executed successfully
+2025-12-23 22:51:29,435 - apscheduler.executors.default - INFO - Running job "Логирование системной статистики (trigger: interval[1:00:00], next run at: 2025-12-23 23:51:27 MSK)" (scheduled at 2025-12-23 22:51:27.452395+03:00)
+2025-12-23 22:51:29,435 - apscheduler.executors.default - INFO - Job "Логирование системной статистики (trigger: interval[1:00:00], next run at: 2025-12-23 23:51:27 MSK)" executed successfully
