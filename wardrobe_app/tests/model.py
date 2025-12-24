@@ -1,6 +1,6 @@
 import os
 from openai import OpenAI
-from collect_data import get_user_profile
+from conftest import get_user_profile
 
 
 def after_think(text: str) -> str:
