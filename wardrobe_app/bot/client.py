@@ -15,7 +15,7 @@ from aiogram.fsm.context import FSMContext
 
 from wardrobe_app.database.connection import get_db, init_db, close_db
 from wardrobe_app.database.models import Gender, User, UserPreferences
-from wardrobe_app.bot.keyboards import get_style_choice_keyboard
+from wardrobe_app.bot.keyboards import get_style_choice_keyboard, STYLE_NAMES, STYLE_TO_NUMBER
 from wardrobe_app.config import settings
 
 from sqlalchemy import select
@@ -23,8 +23,36 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from wardrobe_app.database.connection import AsyncSessionLocal
 
 
-async def validate_city_with_weather_api(city_name: str) -> bool:
-    return True
+async def validate_city_with_weather_api(city_name: str) -> tuple[bool, dict | None]:
+    """
+    Проверяет существование города через OpenWeatherMap API
+    Возвращает (статус_успеха, данные_города) или (False, None)
+    """
+    try:
+        url = "http://api.openweathermap.org/data/2.5/weather"
+
+        params = {
+            "q": city_name,
+            "appid": settings.WEATHERAPI_KEY,
+            "units": "metric",
+            "lang": "ru"
+        }
+
+        async with aiohttp.ClientSession() as session:
+            async with session.get(url, params=params, timeout=10) as response:
+                if response.status == 200:
+                    data = await response.json()
+                    return True, data
+                else:
+                    logging.warning(f"Город '{city_name}' не найден, статус: {response.status}")
+                    return False, None
+
+    except aiohttp.ClientTimeout:
+        logging.error(f"Таймаут при проверке города '{city_name}'")
+        return False, None
+    except Exception as e:
+        logging.error(f"Error validating city '{city_name}': {e}")
+        return False, None
 
 
 class Survey(StatesGroup):
@@ -32,7 +60,6 @@ class Survey(StatesGroup):
     gender = State()
     city = State()
     enable_dispatch = State()
-    timezone = State()
     local_time = State()
     clothes_style = State()
 
@@ -111,33 +138,55 @@ async def process_city(message: Message, state: FSMContext) -> None:
 
     await message.answer("Проверяю город...")
 
-    is_valid = await validate_city_with_weather_api(city)
+    is_valid, city_data = await validate_city_with_weather_api(city)
 
     if not is_valid:
         await message.answer(
             f"Город '{city}' не найден.\n\n"
             "Проверьте правильность написания или используйте формат:\n"
             "'Москва' (кириллицей)\n"
-            "'Moscow,RU' (англ. + код страны)\n"
-            "'London,UK'\n\n"
+            "'Moscow,RU' (англ. + код страны)\n\n"
             "Введите город еще раз:"
         )
         return
 
-    await state.update_data(city=city)
+    await state.update_data(city=city, city_data=city_data)
 
-    await message.answer(
-        f"Город '{city}' найден!\n\n"
-        "4. Хотите ли вы получать ежедневные рекомендации по одежде утром?",
-        reply_markup=InlineKeyboardMarkup(
-            inline_keyboard=[
-                [
-                    InlineKeyboardButton(text="Да, хочу", callback_data="enable_dispatch_yes"),
-                    InlineKeyboardButton(text="Нет, не нужно", callback_data="enable_dispatch_no")
+    if city_data and 'timezone' in city_data:
+        timezone_offset = city_data['timezone']
+        hours = timezone_offset // 3600
+
+        timezone_str = f"UTC{'+' if hours >= 0 else ''}{hours}"
+        await state.update_data(timezone_str=timezone_str, auto_timezone=True)
+
+        await message.answer(
+            f"Город '{city}' найден!\n"
+            f"Часовой пояс автоматически определен: {timezone_str}\n\n"
+            "4. Хотите ли вы получать ежедневные рекомендации по одежде утром?",
+            reply_markup=InlineKeyboardMarkup(
+                inline_keyboard=[
+                    [
+                        InlineKeyboardButton(text="Да, хочу", callback_data="enable_dispatch_yes"),
+                        InlineKeyboardButton(text="Нет, не нужно", callback_data="enable_dispatch_no")
+                    ]
                 ]
-            ]
+            )
         )
-    )
+    else:
+        await state.update_data(auto_timezone=False)
+        await message.answer(
+            f"Город '{city}' найден!\n\n"
+            "4. Хотите ли вы получать ежедневные рекомендации по одежде утром?",
+            reply_markup=InlineKeyboardMarkup(
+                inline_keyboard=[
+                    [
+                        InlineKeyboardButton(text="Да, хочу", callback_data="enable_dispatch_yes"),
+                        InlineKeyboardButton(text="Нет, не нужно", callback_data="enable_dispatch_no")
+                    ]
+                ]
+            )
+        )
+
     await state.set_state(Survey.enable_dispatch)
 
 
@@ -146,16 +195,16 @@ async def process_dispatch_yes(callback: CallbackQuery, state: FSMContext):
     try:
         await state.update_data(enable_dispatch=True)
 
-        await callback.message.edit_text(
-            "Ежедневная рассылка включена.\n\n"
-            "Укажите ваш часовой пояс относительно UTC.\n"
-            "Примеры:\n"
-            "UTC+3 (для Москвы)\n"
-            "UTC+5 (для Екатеринбурга)\n"
-            "UTC-5 (для Нью-Йорка)"
-        )
+        data = await state.get_data()
+        timezone_str = data.get('timezone_str', 'UTC+3')  # По умолчанию
 
-        await state.set_state(Survey.timezone)
+        await callback.message.edit_text(
+            f"Ежедневная рассылка включена.\n"
+            f"Часовой пояс: {timezone_str}\n\n"
+            "Укажите время утренней рассылки в формате ЧЧ:ММ.\n"
+            "Например: 08:00 или 09:30"
+        )
+        await state.set_state(Survey.local_time)
 
     except Exception as e:
         logging.error(f"Error in process_dispatch_yes: {e}")
@@ -170,29 +219,6 @@ async def process_dispatch_no(callback: CallbackQuery, state: FSMContext):
     await callback.message.edit_text("Ежедневная рассылка отключена.")
     await ask_style_choice(callback.message, state)
     await callback.answer()
-
-
-@dp.message(Survey.timezone)
-async def process_timezone(message: Message, state: FSMContext) -> None:
-    timezone_str = message.text.strip().upper()
-
-    pattern = r"^UTC[+-]\d{1,2}(:\d{2})?$"
-    if not re.match(pattern, timezone_str):
-        await message.answer(
-            "Неверный формат часового пояса.\n"
-            "Используйте формат: UTC+3 или UTC-5\n\n"
-            "Попробуйте еще раз:"
-        )
-        return
-
-    await state.update_data(timezone_str=timezone_str)
-
-    await message.answer(
-        f"Часовой пояс '{timezone_str}' сохранен.\n\n"
-        "Введите время утренней рассылки в формате ЧЧ:ММ.\n"
-        "Например: 08:00 или 09:30"
-    )
-    await state.set_state(Survey.local_time)
 
 
 @dp.message(Survey.local_time)
@@ -216,23 +242,21 @@ async def process_local_time(message: Message, state: FSMContext) -> None:
 
     await state.update_data(dispatch_time=formatted_time)
 
-    await message.answer(f"Время рассылки установлено на {formatted_time}.")
+    data = await state.get_data()
+    timezone_str = data.get('timezone_str', 'не определен')
+
+    await message.answer(
+        f"Время рассылки установлено на {formatted_time}\n"
+        f"Часовой пояс: {timezone_str}\n\n"
+        "Переходим к выбору стиля одежды..."
+    )
+
     await ask_style_choice(message, state)
 
 
 async def ask_style_choice(message: Message, state: FSMContext):
     await message.answer(
-        "5. Выберите ваш стиль одежды (от 1 до 10):\n"
-        "1\n"
-        "2\n"
-        "3\n"
-        "4\n"
-        "5\n"
-        "6\n"
-        "7\n"
-        "8\n"
-        "9\n"
-        "10",
+        "5. Выберите ваш стиль одежды:",
         reply_markup=get_style_choice_keyboard()
     )
     await state.set_state(Survey.clothes_style)
@@ -241,16 +265,17 @@ async def ask_style_choice(message: Message, state: FSMContext):
 @dp.callback_query(F.data.startswith("style_"), Survey.clothes_style)
 async def process_style_choice(callback: CallbackQuery, state: FSMContext):
     try:
-        style_num = int(callback.data.replace("style_", ""))
+        style_key = callback.data.replace("style_", "")
 
-        if not (1 <= style_num <= 10):
-            await callback.answer("Некорректный номер стиля")
+        if style_key not in STYLE_TO_NUMBER:
+            await callback.answer("Некорректный стиль")
             return
 
+        style_num = STYLE_TO_NUMBER[style_key]
+        style_name = STYLE_NAMES[style_key]
+
         await state.update_data(clothes_style=style_num)
-
-        await callback.message.edit_text(f"Выбран стиль №{style_num}")
-
+        await callback.message.edit_text(f"Выбран стиль: {style_name}")
         await finish_survey_for_user(callback, state)
 
     except Exception as e:
@@ -304,8 +329,8 @@ async def finish_survey_for_user(callback: CallbackQuery, state: FSMContext):
             gender_enum = Gender.MALE if gender_str == "MALE" else Gender.FEMALE
 
         wants_dispatch = bool(data.get("enable_dispatch", False))
-        timezone_str = data.get("timezone_str") if wants_dispatch else None
-        dispatch_time = data.get("dispatch_time") if wants_dispatch else None
+        timezone_str = data.get('timezone_str') if wants_dispatch else None
+        dispatch_time = data.get('dispatch_time') if wants_dispatch else None
 
         stmt = select(UserPreferences).where(UserPreferences.user_id == user.id)
         result = await session.execute(stmt)
@@ -348,11 +373,18 @@ async def finish_survey_for_user(callback: CallbackQuery, state: FSMContext):
         if session:
             await session.close()
 
+    style_number = data.get('clothes_style', 1)
+    style_name = "Неизвестный"
+    for key, num in STYLE_TO_NUMBER.items():
+        if num == style_number:
+            style_name = STYLE_NAMES[key]
+            break
+
     await callback.message.answer(
         f"Настройка завершена и сохранена!\n"
         f"Имя: {data.get('name', '')}\n"
         f"Город: {data.get('city', '')}\n"
-        f"Стиль: №{data.get('clothes_style', 1)}"
+        f"Стиль: {style_name}"
     )
 
 
@@ -392,12 +424,19 @@ async def command_check_handler(message: Message):
                 await message.answer("Настройки не найдены.\nИспользуйте /start")
                 return
 
+            style_number = prefs.clothing_style
+            style_name = "Неизвестный"
+            for key, num in STYLE_TO_NUMBER.items():
+                if num == style_number:
+                    style_name = STYLE_NAMES[key]
+                    break
+
             response = (
                 f"Ваши текущие настройки:\n\n"
                 f"Имя: {prefs.name}\n"
                 f"Пол: {'Мужской' if prefs.gender == Gender.MALE else 'Женский'}\n"
                 f"Город: {prefs.city}\n"
-                f"Стиль: №{prefs.clothing_style}\n"
+                f"Стиль: {style_name}\n"  # Теперь показывает название, а не номер
                 f"Рассылка: {'Включена' if prefs.wants_dispatch else 'Отключена'}\n"
             )
 

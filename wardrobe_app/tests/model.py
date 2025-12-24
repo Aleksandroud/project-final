@@ -31,13 +31,6 @@ def generate_clothing_recommendation(
     Стиль одежды: {profile.get("clothing_style")}
     """
 
-    # user_context = f"""
-    #     Имя: Иван
-    #     Пол: male
-    #     Город: Москва
-    #     Стиль одежды: спортивный
-    # """
-
     messages = [
         {
             "role": "system",

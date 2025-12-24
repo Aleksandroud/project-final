@@ -1,13 +1,41 @@
-from aiogram.types import InlineKeyboardMarkup, InlineKeyboardButton
+from aiogram.types import InlineKeyboardButton, InlineKeyboardMarkup
+
+STYLES = {
+    "classic": "👔 Классический",
+    "casual": "😌 Повседневный",
+    "sporty": "🏃 Спортивный",
+    "minimalism": "🧱 Минимализм",
+    "streetwear": "🗽 Уличный"
+}
+
+STYLE_TO_NUMBER = {
+    "classic": 1,
+    "casual": 2,
+    "sporty": 3,
+    "minimalism": 4,
+    "streetwear": 5
+}
+
+STYLE_NAMES = {
+    "classic": "Классический",
+    "casual": "Повседневный",
+    "sporty": "Спортивный",
+    "minimalism": "Минимализм",
+    "streetwear": "Уличный"
+}
 
 
 def get_style_choice_keyboard() -> InlineKeyboardMarkup:
     buttons = []
     row = []
 
-    for i in range(1, 11):
-        row.append(InlineKeyboardButton(text=str(i), callback_data=f"style_{i}"))
-        if i % 5 == 0 or i == 10:
+    for i, (style_key, style_name) in enumerate(STYLES.items(), 1):
+        row.append(InlineKeyboardButton(
+            text=style_name,
+            callback_data=f"style_{style_key}"
+        ))
+
+        if i % 2 == 0 or i == len(STYLES):
             buttons.append(row)
             row = []
 

@@ -6,7 +6,7 @@ from aiogram import Bot
 from aiogram.exceptions import TelegramForbiddenError, TelegramBadRequest
 
 from wardrobe_app.database.connection import get_db
-from wardrobe_app.llm_model.model import generate_clothing_recommendation
+from wardrobe_app.tests.model import generate_clothing_recommendation
 from wardrobe_app.database.connection import get_db
 from wardrobe_app.database.models import User, UserPreferences
 from .cache import weather_cache
