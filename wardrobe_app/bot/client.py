@@ -19,7 +19,7 @@ from wardrobe_app.bot.keyboards import get_style_choice_keyboard, STYLE_NAMES, S
 from wardrobe_app.config import settings
 from wardrobe_app.services.recommendation import get_clothing_recommendation
 from wardrobe_app.services.cache import weather_cache
-from wardrobe_app.services.weather import WeatherAPI
+from wardrobe_app.services.recommendation import main_rec
 
 from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
@@ -407,13 +407,10 @@ async def command_change_handler(message: Message, state: FSMContext):
 @dp.message(Command("check"))
 async def command_check_handler(message: Message, state: FSMContext):
     data = await state.get_data()
-    weather_data = # TODO: запсиать сюда прогноз погоды
-    await get_clothing_recommendation(
-                            temperature=weather_data.temperature,
-                            conditions=weather_data.conditions,
-                            gender=data,
-                            style=str(data.get("clothes_style", ""))[:100]
-                        )
+    city = str(data.get("city", ""))[:100]
+    message = await main_rec(city)
+    await message.answer(message)
+
 
 @dp.message(Command("settings"))
 async def command_settings_handler(message: Message):
