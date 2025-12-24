@@ -411,7 +411,6 @@ async def command_check_handler(message: Message, state: FSMContext):
     message = await main_rec(city)
     await message.answer(message)
 
-
 @dp.message(Command("settings"))
 async def command_settings_handler(message: Message):
     try:
