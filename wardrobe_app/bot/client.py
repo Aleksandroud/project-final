@@ -407,7 +407,7 @@ async def command_change_handler(message: Message, state: FSMContext):
 @dp.message(Command("check"))
 async def command_check_handler(message: Message, state: FSMContext):
     data = await state.get_data()
-    weather_data = WeatherAPI.get_current_weather(str(data.get("city", ""))[:100])
+    weather_data = # TODO: запсиать сюда прогноз погоды
     await get_clothing_recommendation(
                             temperature=weather_data.temperature,
                             conditions=weather_data.conditions,
