@@ -1,4 +1,3 @@
-import asyncio
 import logging
 from datetime import datetime, timezone
 from typing import Dict, Any, Optional
@@ -14,8 +13,8 @@ from apscheduler.executors.pool import ThreadPoolExecutor, ProcessPoolExecutor
 from aiogram import Bot
 from wardrobe_app.config import settings
 from wardrobe_app.database.connection import get_db
-from services.dispatcher import run_morning_dispatch
-from services.cache import weather_cache
+from wardrobe_app.services.dispatcher import run_morning_dispatch
+from wardrobe_app.services.cache import weather_cache
 
 logger = logging.getLogger(__name__)
 

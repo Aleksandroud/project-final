@@ -10,7 +10,7 @@ from wardrobe_app.config import settings
 from wardrobe_app.bot.client import dp
 from wardrobe_app.database.connection import init_db, close_db
 from wardrobe_app.scheduler import initialize_scheduler
-from services.cache import weather_cache
+from wardrobe_app.services.cache import weather_cache
 
 logging.basicConfig(
     level=logging.INFO,

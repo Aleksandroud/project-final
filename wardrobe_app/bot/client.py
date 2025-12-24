@@ -2,7 +2,7 @@ import aiohttp
 import asyncio
 import logging
 import sys
-import re
+
 from datetime import datetime
 from aiogram import Bot, Dispatcher, F
 from aiogram.filters import CommandStart, Command
@@ -17,6 +17,8 @@ from wardrobe_app.database.connection import get_db, init_db, close_db
 from wardrobe_app.database.models import Gender, User, UserPreferences
 from wardrobe_app.bot.keyboards import get_style_choice_keyboard, STYLE_NAMES, STYLE_TO_NUMBER
 from wardrobe_app.config import settings
+from wardrobe_app.services.recommendation import get_clothing_recommendation
+from wardrobe_app.services.cache import weather_cache
 
 from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
@@ -401,9 +403,27 @@ async def command_change_handler(message: Message, state: FSMContext):
         )
     )
 
-
 @dp.message(Command("check"))
 async def command_check_handler(message: Message):
+    async with get_db() as session:
+        prefs_result = await session.execute(
+                    "SELECT name, gender, clothing_style FROM user_preferences WHERE user_id = :user_id",
+                    {"user_id": User.id}
+                )
+        prefs = prefs_result.fetchone()
+    weather_data = await weather_cache.get_weather(prefs.city if prefs and prefs.city else "Москва")
+    name = prefs.name if prefs and prefs.name else "Друг"
+    gender = prefs.gender.value if prefs and prefs.gender else "male"
+    style = prefs.clothing_style if prefs and prefs.clothing_style is not None else 0
+    await get_clothing_recommendation(
+                            temperature=weather_data.temperature,
+                            conditions=weather_data.conditions,
+                            gender=gender,
+                            style=style
+                        )
+
+@dp.message(Command("settings"))
+async def command_settings_handler(message: Message):
     try:
         async for session in get_db():
             user_result = await session.execute(

@@ -1,7 +1,7 @@
 import aiohttp
 import logging
 from datetime import datetime, timedelta
-from typing import Optional, Dict, Any, Tuple
+from typing import Optional, Dict, Tuple
 from dataclasses import dataclass
 from wardrobe_app.config import settings
 from wardrobe_app.database.connection import get_db
