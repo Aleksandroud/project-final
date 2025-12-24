@@ -149,3 +149,10 @@ async def main_rec(city: str = "Москва"):
             f"Хорошего дня! 🌤️"
         )
         return message
+<<<<<<< HEAD
+=======
+
+
+if __name__ == "__main__":
+    asyncio.run(main_rec())
+>>>>>>> 2fe7b443d7233df4ec3f0f3e8f8696091008781c
