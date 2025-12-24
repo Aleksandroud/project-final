@@ -1,10 +1,4 @@
-from aiogram.types import (
-    Message,
-    CallbackQuery,
-    Chat,
-    User,
-    Update,
-)
+from aiogram.types import CallbackQuery
 from wardrobe_app.database.models import UserPreferences
 from aiogram.types import Update, Message, Chat, User
 from datetime import datetime

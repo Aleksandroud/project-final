@@ -1,5 +1,5 @@
 from openai import OpenAI
-from config import settings
+from wardrobe_app.config import settings
 
 
 def after_think(text: str) -> str:
@@ -25,7 +25,7 @@ STYLES = {
 def get_clothing_recommendation(
         temperature: float,
         conditions: str,
-        gender: str,
+        gender: str = "male",
         style: int = 0
 ) -> str:
     """
