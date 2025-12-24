@@ -1,6 +1,4 @@
-import aiohttp
 import asyncio
-import logging
 import sys
 
 from datetime import datetime
@@ -17,44 +15,74 @@ from wardrobe_app.database.connection import get_db, init_db, close_db
 from wardrobe_app.database.models import Gender, User, UserPreferences
 from wardrobe_app.bot.keyboards import get_style_choice_keyboard, STYLE_NAMES, STYLE_TO_NUMBER
 from wardrobe_app.config import settings
-from wardrobe_app.services.recommendation import get_clothing_recommendation
-from wardrobe_app.services.cache import weather_cache
 from wardrobe_app.services.recommendation import main_rec
 
 from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
 from wardrobe_app.database.connection import AsyncSessionLocal
 
+import logging
+from geopy.geocoders import Nominatim
+from geopy.adapters import AioHTTPAdapter
+from geopy.exc import GeocoderTimedOut, GeocoderServiceError
+
 
 async def validate_city_with_weather_api(city_name: str) -> tuple[bool, dict | None]:
     """
-    Проверяет существование города через OpenWeatherMap API
-    Возвращает (статус_успеха, данные_города) или (False, None)
+    Проверяет существование города через Nominatim (OpenStreetMap) с помощью geopy.
+    Возвращает (статус_успеха, данные_города) или (False, None).
+
+    Данные включают:
+    - normalized_city: нормализованное название города
+    - full_address: полный адрес
+    - latitude, longitude
+    - raw: полный ответ от Nominatim
     """
     try:
-        url = "http://api.openweathermap.org/data/2.5/weather"
+        async with Nominatim(
+                user_agent="my_city_validator_app",
+                adapter_factory=AioHTTPAdapter,
+                timeout=10
+        ) as geolocator:
+            location = await geolocator.geocode(
+                city_name,
+                exactly_one=True,
+                addressdetails=True,
+                language="ru"
+            )
 
-        params = {
-            "q": city_name,
-            "appid": settings.WEATHERAPI_KEY,
-            "units": "metric",
-            "lang": "ru"
+        if location is None:
+            logging.warning(f"Город '{city_name}' не найден в Nominatim")
+            return False, None
+
+        address = location.raw.get('address', {})
+        normalized_city = (
+                address.get('city') or
+                address.get('town') or
+                address.get('village') or
+                address.get('county') or
+                address.get('state') or
+                location.address.split(',')[0].strip()
+        )
+
+        data = {
+            'normalized_city': normalized_city,
+            'full_address': location.address,
+            'latitude': location.latitude,
+            'longitude': location.longitude,
+            'raw': location.raw
         }
 
-        async with aiohttp.ClientSession() as session:
-            async with session.get(url, params=params, timeout=10) as response:
-                if response.status == 200:
-                    data = await response.json()
-                    return True, data
-                else:
-                    logging.warning(f"Город '{city_name}' не найден, статус: {response.status}")
-                    return False, None
+        return True, data
 
-    except aiohttp.ClientTimeout:
-        logging.error(f"Таймаут при проверке города '{city_name}'")
+    except GeocoderTimedOut:
+        logging.error(f"Таймаут при проверке города '{city_name}' в Nominatim")
+        return False, None
+    except GeocoderServiceError as e:
+        logging.error(f"Ошибка сервиса Nominatim для города '{city_name}': {e}")
         return False, None
     except Exception as e:
-        logging.error(f"Error validating city '{city_name}': {e}")
+        logging.error(f"Неизвестная ошибка при валидации города '{city_name}': {e}")
         return False, None
 
 
@@ -408,8 +436,8 @@ async def command_change_handler(message: Message, state: FSMContext):
 async def command_check_handler(message: Message, state: FSMContext):
     data = await state.get_data()
     city = str(data.get("city", ""))[:100]
-    message = await main_rec(city)
-    await message.answer(message)
+    answer = await main_rec(city)
+    await message.answer(answer)
 
 
 @dp.message(Command("settings"))
