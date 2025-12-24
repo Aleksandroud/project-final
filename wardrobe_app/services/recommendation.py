@@ -1,5 +1,49 @@
 from openai import OpenAI
 from wardrobe_app.config import settings
+import aiohttp
+from typing import Dict, Any, Optional
+import asyncio
+
+
+class WeatherForecast:
+    def __init__(self, api_key: str):
+        self.api_key = api_key
+        self.base_url = "https://api.openweathermap.org/data/2.5"
+        self.session: Optional[aiohttp.ClientSession] = None
+
+    async def __aenter__(self):
+        self.session = aiohttp.ClientSession()
+        return self
+
+    async def __aexit__(self, exc_type, exc_val, exc_tb):
+        if self.session:
+            await self.session.close()
+
+    async def get_forecast(
+        self,
+        city: str,
+        days: int = 1,
+        lang: str = "ru",
+    ) -> dict:
+        if not self.session:
+            raise RuntimeError("Use 'async with WeatherForecast(...)'")
+
+        url = f"{self.base_url}/forecast"
+        params = {
+            "q": city,
+            "appid": self.api_key,
+            "units": "metric",
+            "lang": lang,
+        }
+
+        async with self.session.get(url, params=params, timeout=10) as response:
+            if response.status != 200:
+                text = await response.text()
+                raise RuntimeError(
+                    f"OpenWeatherMap error {response.status}: {text}"
+                )
+
+            return await response.json()
 
 
 def after_think(text: str) -> str:
@@ -80,4 +124,33 @@ def get_clothing_recommendation(
         response.choices[0].message.content
     )
 
-print(get_clothing_recommendation(34, "ясно"))
+
+async def main():
+    async with WeatherForecast(settings.WEATHERAPI_KEY) as weather:
+        city = "Москва"
+        data = await weather.get_forecast(
+            city=city,
+            days=1,
+            lang="ru",
+        )
+
+        today = data["list"][0]
+        recommendation = get_clothing_recommendation(
+            today["main"]["temp"],
+            f"Ощущается как: {today["main"]["feels_like"]},\n Описание: {today["weather"][0]["description"]}, \n Ветер:{today["wind"]["speed"]} м/с",
+            "male", 3)
+
+        message = (
+            f"Доброе утро, Муза!\n\n"
+            f"Погода в Москве сегодня:\n"
+            f"Температура: {today["main"]["temp"]:.1f}°C (ощущается как {today["main"]["feels_like"]:.1f}°C)\n"
+            f"Условия: {today["weather"][0]["description"]}\n"
+            f"Ветер: {today["wind"]["speed"]} км/ч\n\n"
+            f"Рекомендация по одежде:\n{recommendation}\n"
+            f"Хорошего дня! 🌤️"
+        )
+        print(message)
+
+
+if __name__ == "__main__":
+    asyncio.run(main())
