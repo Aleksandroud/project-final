@@ -125,9 +125,8 @@ def get_clothing_recommendation(
     )
 
 
-async def main():
+async def main_rec(city: str = "Москва"):
     async with WeatherForecast(settings.WEATHERAPI_KEY) as weather:
-        city = "Москва"
         data = await weather.get_forecast(
             city=city,
             days=1,
@@ -141,7 +140,7 @@ async def main():
             "male", 3)
 
         message = (
-            f"Доброе утро, Муза!\n\n"
+            f"Доброе утро!\n\n"
             f"Погода в Москве сегодня:\n"
             f"Температура: {today["main"]["temp"]:.1f}°C (ощущается как {today["main"]["feels_like"]:.1f}°C)\n"
             f"Условия: {today["weather"][0]["description"]}\n"
@@ -149,8 +148,8 @@ async def main():
             f"Рекомендация по одежде:\n{recommendation}\n"
             f"Хорошего дня! 🌤️"
         )
-        print(message)
+        return message
 
 
 if __name__ == "__main__":
-    asyncio.run(main())
+    asyncio.run(main_rec())
