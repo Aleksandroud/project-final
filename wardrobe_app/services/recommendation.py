@@ -19,12 +19,7 @@ class WeatherForecast:
         if self.session:
             await self.session.close()
 
-    async def get_forecast(
-        self,
-        city: str,
-        days: int = 1,
-        lang: str = "ru",
-    ) -> dict:
+    async def get_forecast(self, city: str) -> dict:
         if not self.session:
             raise RuntimeError("Use 'async with WeatherForecast(...)'")
 
@@ -33,7 +28,6 @@ class WeatherForecast:
             "q": city,
             "appid": self.api_key,
             "units": "metric",
-            "lang": lang,
         }
 
         async with self.session.get(url, params=params, timeout=10) as response:
@@ -73,8 +67,6 @@ def get_clothing_recommendation(
         style: int = 0
 ) -> str:
     """
-    Заглушка для рекомендательной системы.
-
     Args:
         temperature: Температура в °C
         conditions: Описание погоды ("ясно", "дождь" и т.д.)
@@ -87,7 +79,7 @@ def get_clothing_recommendation(
 
     user_context = f"""
     Пол: {gender}
-    Стиль одежды: {STYLES[style]}
+    Стиль одежды: {style}
     """
 
     messages = [
@@ -125,23 +117,20 @@ def get_clothing_recommendation(
     )
 
 
-async def main_rec(city: str = "Москва"):
+async def main_rec(name: str, style: str, gender: str = "male", city: str = "Москва"):
     async with WeatherForecast(settings.WEATHERAPI_KEY) as weather:
-        data = await weather.get_forecast(
-            city=city,
-            days=1,
-            lang="ru",
-        )
+        data = await weather.get_forecast(city=city)
 
+        print(city)
         today = data["list"][0]
         recommendation = get_clothing_recommendation(
             today["main"]["temp"],
             f"Ощущается как: {today["main"]["feels_like"]},\n Описание: {today["weather"][0]["description"]}, \n Ветер:{today["wind"]["speed"]} м/с",
-            "male", 3)
+            gender, style)
 
         message = (
-            f"Доброе утро!\n\n"
-            f"Погода в Москве сегодня:\n"
+            f"Доброе утро, {name}!\n\n"
+            f"Погода на сегодня:\n"
             f"Температура: {today["main"]["temp"]:.1f}°C (ощущается как {today["main"]["feels_like"]:.1f}°C)\n"
             f"Условия: {today["weather"][0]["description"]}\n"
             f"Ветер: {today["wind"]["speed"]} км/ч\n\n"
@@ -149,10 +138,3 @@ async def main_rec(city: str = "Москва"):
             f"Хорошего дня! 🌤️"
         )
         return message
-<<<<<<< HEAD
-=======
-
-
-if __name__ == "__main__":
-    asyncio.run(main_rec())
->>>>>>> 2fe7b443d7233df4ec3f0f3e8f8696091008781c

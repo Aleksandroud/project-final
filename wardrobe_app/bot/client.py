@@ -10,6 +10,7 @@ from aiogram.enums import ParseMode
 from aiogram.fsm.state import State, StatesGroup
 from aiogram.fsm.storage.memory import MemoryStorage
 from aiogram.fsm.context import FSMContext
+from sqlalchemy.sql.coercions import expect
 
 from wardrobe_app.database.connection import get_db, init_db, close_db
 from wardrobe_app.database.models import Gender, User, UserPreferences
@@ -22,21 +23,16 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from wardrobe_app.database.connection import AsyncSessionLocal
 
 import logging
+import aiohttp
 from geopy.geocoders import Nominatim
 from geopy.adapters import AioHTTPAdapter
 from geopy.exc import GeocoderTimedOut, GeocoderServiceError
 
 
-async def validate_city_with_weather_api(city_name: str) -> tuple[bool, dict | None]:
+async def search_location(city_name: str) -> tuple[bool, str | None]:
     """
     Проверяет существование города через Nominatim (OpenStreetMap) с помощью geopy.
-    Возвращает (статус_успеха, данные_города) или (False, None).
-
-    Данные включают:
-    - normalized_city: нормализованное название города
-    - full_address: полный адрес
-    - latitude, longitude
-    - raw: полный ответ от Nominatim
+    Возвращает (True, название города) или (False, None).
     """
     try:
         async with Nominatim(
@@ -47,8 +43,7 @@ async def validate_city_with_weather_api(city_name: str) -> tuple[bool, dict | N
             location = await geolocator.geocode(
                 city_name,
                 exactly_one=True,
-                addressdetails=True,
-                language="ru"
+                addressdetails=True
             )
 
         if location is None:
@@ -56,24 +51,7 @@ async def validate_city_with_weather_api(city_name: str) -> tuple[bool, dict | N
             return False, None
 
         address = location.raw.get('address', {})
-        normalized_city = (
-                address.get('city') or
-                address.get('town') or
-                address.get('village') or
-                address.get('county') or
-                address.get('state') or
-                location.address.split(',')[0].strip()
-        )
-
-        data = {
-            'normalized_city': normalized_city,
-            'full_address': location.address,
-            'latitude': location.latitude,
-            'longitude': location.longitude,
-            'raw': location.raw
-        }
-
-        return True, data
+        return True, address.get("state")
 
     except GeocoderTimedOut:
         logging.error(f"Таймаут при проверке города '{city_name}' в Nominatim")
@@ -83,6 +61,43 @@ async def validate_city_with_weather_api(city_name: str) -> tuple[bool, dict | N
         return False, None
     except Exception as e:
         logging.error(f"Неизвестная ошибка при валидации города '{city_name}': {e}")
+        return False, None
+
+
+async def validate_city_with_weather_api(city_name: str) -> tuple[bool, dict | None]:
+    """
+    Проверяет существование города через OpenWeatherMap API
+    Возвращает(статус_успеха, данные_города) или(False, None)
+    """
+    try:
+        flag, city = await search_location(city_name)
+        print(city)
+        if not flag:
+            return False, None
+
+        url = "http://api.openweathermap.org/data/2.5/weather"
+
+        params = {
+            "q": city,
+            "appid": settings.WEATHERAPI_KEY,
+            "units": "metric",
+            "lang": "ru"
+        }
+
+        async with aiohttp.ClientSession() as session:
+            async with session.get(url, params=params, timeout=10) as response:
+                if response.status == 200:
+                    data = await response.json()
+                    return True, data
+                else:
+                    logging.warning(f"Город '{city_name}' не найден, статус: {response.status}")
+                    return False, None
+
+    except aiohttp.ClientTimeout:
+        logging.error(f"Таймаут при проверке города '{city_name}'")
+        return False, None
+    except Exception as e:
+        logging.error(f"Error validating city '{city_name}': {e}")
         return False, None
 
 
@@ -181,7 +196,7 @@ async def process_city(message: Message, state: FSMContext) -> None:
         )
         return
 
-    await state.update_data(city=city, city_data=city_data)
+    await state.update_data(city=city_data["name"], city_data=city_data)
 
     if city_data and 'timezone' in city_data:
         timezone_offset = city_data['timezone']
@@ -191,7 +206,7 @@ async def process_city(message: Message, state: FSMContext) -> None:
         await state.update_data(timezone_str=timezone_str, auto_timezone=True)
 
         await message.answer(
-            f"Город '{city}' найден!\n"
+            f"Город '{city_data['name']}' найден!\n"
             f"Часовой пояс автоматически определен: {timezone_str}\n\n"
             "4. Хотите ли вы получать ежедневные рекомендации по одежде утром?",
             reply_markup=InlineKeyboardMarkup(
@@ -433,11 +448,40 @@ async def command_change_handler(message: Message, state: FSMContext):
     )
 
 @dp.message(Command("check"))
-async def command_check_handler(message: Message, state: FSMContext):
-    data = await state.get_data()
-    city = str(data.get("city", ""))[:100]
-    answer = await main_rec(city)
-    await message.answer(answer)
+async def command_check_handler(message: Message):
+    try:
+        async for session in get_db():
+            user_result = await session.execute(
+                select(User).where(User.telegram_id == message.from_user.id)
+            )
+            user = user_result.scalar_one_or_none()
+
+            if not user:
+                await message.answer("Вы еще не проходили опрос.\nИспользуйте /start")
+                return
+
+            prefs_result = await session.execute(
+                select(UserPreferences).where(UserPreferences.user_id == user.id)
+            )
+            prefs = prefs_result.scalar_one_or_none()
+
+            if not prefs:
+                await message.answer("Настройки не найдены.\nИспользуйте /start")
+                return
+
+            style_number = prefs.clothing_style
+            style_name = "Неизвестный"
+            for key, num in STYLE_TO_NUMBER.items():
+                if num == style_number:
+                    style_name = STYLE_NAMES[key]
+                    break
+
+            answer = await main_rec(prefs.name, style_name, prefs.gender, prefs.city)
+            await message.answer(answer)
+
+    except Exception as e:
+        logging.error(f"Error in /check: {e}")
+        await message.answer("Произошла ошибка при генерации рекомендации")
 
 @dp.message(Command("settings"))
 async def command_settings_handler(message: Message):
@@ -473,7 +517,7 @@ async def command_settings_handler(message: Message):
                 f"Имя: {prefs.name}\n"
                 f"Пол: {'Мужской' if prefs.gender == Gender.MALE else 'Женский'}\n"
                 f"Город: {prefs.city}\n"
-                f"Стиль: {style_name}\n"  # Теперь показывает название, а не номер
+                f"Стиль: {style_name}\n" 
                 f"Рассылка: {'Включена' if prefs.wants_dispatch else 'Отключена'}\n"
             )
 
